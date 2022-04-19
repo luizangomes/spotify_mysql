@@ -1,0 +1,337 @@
+CREATE DATABASE SPOTIFY_FINAL;
+USE SPOTIFY_FINAL;
+
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS GRAVADORA;
+DROP TABLE IF EXISTS CONCERTO;
+DROP TABLE IF EXISTS ARTISTA;
+DROP TABLE IF EXISTS ALBUM;
+DROP TABLE IF EXISTS GENERO;
+DROP TABLE IF EXISTS MUSICA;
+DROP TABLE IF EXISTS USUARIO;
+DROP TABLE IF EXISTS PLAYLIST;
+DROP TABLE IF EXISTS PODCAST;
+DROP TABLE IF EXISTS EPISODIO;
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+CREATE TABLE GRAVADORA (
+	codGravadora INT AUTO_INCREMENT,
+	nomeGravadora VARCHAR(45) NOT NULL,
+	bioGravadora VARCHAR(200),
+	dataGravadora DATE NOT NULL,
+	statusGravadora VARCHAR(10) NOT NULL,
+	paisGravadora VARCHAR(45) NOT NULL,
+    CONSTRAINT PK_codGravadora PRIMARY KEY (codGravadora)
+);
+
+CREATE TABLE CONCERTO (
+	dataHoraConcerto DATETIME NOT NULL,
+	localConcerto VARCHAR(45) NOT NULL,
+	lotacaoConcerto INT,
+	valorConcerto FLOAT NOT NULL,
+	imgConcerto BLOB,
+	CONSTRAINT PK_dataHoraLocal PRIMARY KEY(dataHoraConcerto, localConcerto) /* chave primária composta */
+);
+
+CREATE TABLE ARTISTA (
+	codArtista INT NOT NULL AUTO_INCREMENT,
+    nomeArtista VARCHAR(45) NOT NULL,
+    tipoArtista VARCHAR(10) NOT NULL,
+    statusArtista VARCHAR(10),
+    paisArtista VARCHAR(45),
+    imgArtista BLOB,
+    codGravadora INT,
+    CONSTRAINT PK_codArtista PRIMARY KEY (codArtista),
+    CONSTRAINT FK_codGravadora_artista_gravadora FOREIGN KEY (codGravadora) REFERENCES GRAVADORA(codGravadora)
+);
+
+CREATE TABLE ALBUM (
+	codAlbum INT NOT NULL AUTO_INCREMENT,
+	nomeAlbum VARCHAR(45) NOT NULL,
+	tipoAlbum VARCHAR(20) NOT NULL,
+	dataAlbum DATE NOT NULL,
+	imgAlbum BLOB,
+    codArtista INT NOT NULL,
+    codGravadora INT,
+    CONSTRAINT PK_codAlbum PRIMARY KEY (codAlbum),
+	CONSTRAINT FK_codArtista_album_artista FOREIGN KEY (codArtista) REFERENCES ARTISTA(codArtista) ON DELETE CASCADE,
+    CONSTRAINT FK_codGravadora_album_gravadora FOREIGN KEY (codGravadora) REFERENCES GRAVADORA(codGravadora)
+);
+
+CREATE TABLE GENERO (
+	codGenero INT NOT NULL AUTO_INCREMENT,
+    nomeGenero VARCHAR(45) NOT NULL,
+    subGenero VARCHAR(45) NOT NULL,
+    descGenero VARCHAR(45) NOT NULL,
+    imgGenero BLOB,
+    CONSTRAINT PK_codGenero PRIMARY KEY (codGenero)
+);
+
+CREATE TABLE MUSICA (
+	codMusica INT NOT NULL AUTO_INCREMENT,
+    nomeMusica VARCHAR(45) NOT NULL,
+    compositor VARCHAR(45),
+    produtor VARCHAR(45),
+    durMusica TIME NOT NULL,
+    codAlbum INT NOT NULL,
+    codGenero INT NOT NULL,
+    CONSTRAINT PK_codMusica PRIMARY KEY (codMusica),
+    CONSTRAINT FK_codAlbum_musica_album FOREIGN KEY (codAlbum) REFERENCES ALBUM(codAlbum) ON DELETE CASCADE,
+    CONSTRAINT FK_codGenero_musica_genero FOREIGN KEY (codGenero) REFERENCES GENERO(codGenero) ON DELETE CASCADE
+);
+
+CREATE TABLE USUARIO (
+	cpfUsuario DECIMAL(11) NOT NULL,
+    nomeUsuario VARCHAR(100) NOT NULL,
+    senhaUsuario VARCHAR(45) NOT NULL,
+    emailUsuario VARCHAR(100) NOT NULL,
+    dataNascUsuario DATE NOT NULL,
+    tipoUsuario VARCHAR(10) NOT NULL,
+    imgUsuario BLOB,
+    CONSTRAINT PK_cpfUsuario PRIMARY KEY (cpfUsuario)
+);
+
+CREATE TABLE PLAYLIST (
+	codPlaylist INT NOT NULL AUTO_INCREMENT,
+    nomePlaylist VARCHAR(45) NOT NULL,
+    descPlaylist VARCHAR(200),
+    statusPlaylist VARCHAR(10) NOT NULL,
+    imgPlaylist BLOB,
+    cpfUsuario DECIMAL(11),
+    CONSTRAINT PK_codPlaylist PRIMARY KEY (codPlaylist),
+    CONSTRAINT FK_cpfUsuario_playlist_usuario FOREIGN KEY (cpfUsuario) REFERENCES USUARIO(cpfUsuario)
+);
+
+CREATE TABLE PODCAST (
+	codPodcast INT NOT NULL AUTO_INCREMENT,
+    nomePodcast VARCHAR(45) NOT NULL,
+    generoPodcast VARCHAR(20) NOT NULL,
+    classificacaoPodcast VARCHAR(20) NOT NULL,
+    paisPodcast VARCHAR(45),
+    imgPodcast BLOB,
+    CONSTRAINT PK_codPodcast PRIMARY KEY (codPodcast)
+);
+
+CREATE TABLE EPISODIO (
+	codEpisodio INT NOT NULL AUTO_INCREMENT,
+    nomeEpisodio VARCHAR(45) NOT NULL,
+    dataLancEpisodio DATE NOT NULL,
+    descEpisodio VARCHAR(200),
+    durEpisodio TIME,
+    codPodcast INT NOT NULL,
+    CONSTRAINT PK_codEpisodio PRIMARY KEY (codEpisodio),
+    CONSTRAINT FK_codPodcast_episodio_podcast FOREIGN KEY (codPodcast) REFERENCES PODCAST(codPodcast) ON DELETE CASCADE
+);
+
+/*Tabela de relacionamentos N:N */
+
+/*CONCERTO - ARTISTA */
+CREATE TABLE CONCERTO_ARTISTA (
+    dataHoraConcerto DATETIME REFERENCES CONCERTO(dataHoraConcerto),
+    localConcerto VARCHAR(45) REFERENCES CONCERTO(localConcerto),
+    codArtista INT REFERENCES ARTISTA(codArtista),
+    PRIMARY KEY (dataHoraConcerto, localConcerto, codArtista)
+);
+
+/*USUARIO - ARTISTA */
+CREATE TABLE USUARIO_ARTISTA (
+	cpfUsuario DECIMAL(11) REFERENCES USUARIO(cpfUsuario),
+    codArtista INT REFERENCES ARTISTA(codArtista),
+    PRIMARY KEY (cpfUsuario, codArtista)
+);
+
+/* USUARIO - PODCAST */
+CREATE TABLE USUARIO_PODCAST (
+	cpfUsuario DECIMAL(11) REFERENCES USUARIO(cpfUsuario),
+    codPodcast INT REFERENCES PODCAST(codPodcast),
+    PRIMARY KEY (cpfUsuario, codPodcast)
+);
+
+/* MUSICA - PLAYLIST */
+CREATE TABLE MUSICA_PLAYLIST (
+	codMusica INT REFERENCES MUSICA(codMusica),
+    codPlaylist INT REFERENCES PLAYLIST(codPlaylist),
+    PRIMARY KEY (codMusica, codPlaylist)
+);
+
+/* EPISODIO - PLAYLIST */
+CREATE TABLE EPISODIO_PLAYLIST (
+	codEpisodio INT REFERENCES EPISODIO(codEpisodio),
+    codPlaylist INT REFERENCES PLAYLIST(codPlaylist),
+    PRIMARY KEY (codEpisodio, codPlaylist)
+);
+
+/*Lista de podcasts*/
+insert into PODCAST (codPodcast, nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast) values (1, "Rebobinando", "Sociedade", "+16", "Brasil");
+insert into PODCAST (codPodcast, nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast) values (2, "Vamos Falar Sobre Música?", "Música", "Livre", "Brasil");
+insert into PODCAST (codPodcast, nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast) values (3, "ESA Explores", "Espaço", "Livre", "Inglaterra");
+insert into PODCAST (codPodcast, nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast) values (4, "Matéria Escura", "Música, História", "+16", "Brasil");
+insert into PODCAST (codPodcast, nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast) values (5, "Filosofia Pop", "Filosofia", "Livre", "Brasil");
+
+/*Lista de Episódios*/
+insert into EPISODIO (codEpisodio, nomeEpisodio, dataLancEpisodio, descEpisodio, durEpisodio, codPodcast) values (1, "A construção da autoestima (autoestima)", "2022-03-22", "Autoestima baixa? Tô fora.", "00:21:16", 1);
+insert into EPISODIO (codEpisodio, nomeEpisodio, dataLancEpisodio, descEpisodio, durEpisodio, codPodcast) values (2, "Você não foi improdutivo (fim de ano)", "2022-03-03", "Sobre finais de ano. Enganaram você e sua geração (millenials)(.mp3)", "00:20:15", 1);
+insert into EPISODIO (codEpisodio, nomeEpisodio, dataLancEpisodio, descEpisodio, durEpisodio, codPodcast) values (3, "#014 - Fresno: Vou Ter Que Me Virar", "2021-11-10","Sobre o novo disco da Fresno de 2021 Vou Ter Que Me Virar, falando sobre tudo que a banda gaúcha passou para compor este maravilhoso disco.", "00:55:24", 2);
+insert into EPISODIO (codEpisodio, nomeEpisodio, dataLancEpisodio, descEpisodio, durEpisodio, codPodcast) values (4, "ESA Explores: ERA for Astronauts", "2021-07-01", "ESA astronaut first encountered the European Robotic Arm (ERA) on paper, when it was intended for a proposed spaceplane called Hermes...", "00:20:47", 3);
+insert into EPISODIO (codEpisodio, nomeEpisodio, dataLancEpisodio, descEpisodio, durEpisodio, codPodcast) values (5, "Onde Nasceu o Emo Brasileiro, parte 01", "2020-05-10", "Acordei com essa dúvida e estou em busca de sua resposta. Já sabemos que não nasceu em Porto Alegre, mas sei quem estava lá quando ele chegou à capital Gaúcha.", "00:11:56", 4);
+
+/*Lista de Gravadoras*/
+insert into GRAVADORA(codGravadora, nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora) values (1, "Bertelsmann Music Group (BMG)", "Bertelsmann Music Group (abreviado como BMG) foi uma das seis divisões da empresa alemã Bertelsmann, formada em 1987 para englobar as atividades relacionadas às gravações musicais da empresa.", "2008-10-01", "ativa", "Estados Unidos da América");
+insert into GRAVADORA(codGravadora, nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora) values (2, "EMI", "A Electric and Musical Industries Ltd foi uma empresa multinacional britânica do ramo fonográfico com sede em Londres. Em 2020 seu braço musical foi relançado, sendo distribuído pela Universal.", "1931-03-31", "ativa", "Inglaterra");
+insert into GRAVADORA(codGravadora, nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora) values (3, "Napalm Records", "Napalm Records Handels é uma gravadora da Áustria. Essa empresa está associado com a Federação Internacional da Indústria Fonográfica - IFPI.", "1992-06-06", "ativa", "Áustria");
+insert into GRAVADORA(codGravadora, nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora) values (4, "Warner Records", "Warner Records é uma companhia discográfica norte-americana fundada em 1958, por Jack Warner, tornou-se a maior gravadora do planeta.", "1958-03-19","ativa", "Estados Unidos da América");
+insert into GRAVADORA(codGravadora, nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora) values (5, "Deckdisc", "Deckdisc é uma gravadora brasileira, conhecida por fazer todo o processo da gravação de um álbum, do estúdio até a distribuição.", "1998-03-16", "ativa", "Brasil");
+
+/*Lista de Artistas*/
+insert into ARTISTA (codArtista, nomeArtista, tipoArtista, statusArtista, paisArtista, codGravadora) values (1, "Fresno", "Banda", "ativo", "Brasil", 1);
+insert into ARTISTA (codArtista, nomeArtista, tipoArtista, statusArtista, paisArtista, codGravadora) values (2, "Jinjer", "Banda", "ativo", "Ucrânia", 3);
+insert into ARTISTA (codArtista, nomeArtista, tipoArtista, statusArtista, paisArtista, codGravadora) values (3, "pvris", "Ato", "ativo", "Estados Unidos da América", 4);
+insert into ARTISTA (codArtista, nomeArtista, tipoArtista, statusArtista, paisArtista, codGravadora) values (4, "Silva", "Cantor", "ativo", "Brasil", 5);
+insert into ARTISTA (codArtista, nomeArtista, tipoArtista, statusArtista, paisArtista) values (5, "Alison Wonderland", "DJ", "ativo", "Austrália");
+
+/*Lista de Gêneros*/
+insert into GENERO (codGenero, nomeGenero, descGenero, subGenero) values (1, "Rock", "Perfomances, melodias e letras marcantes.", "Emo, Indie Rock");
+insert into GENERO (codGenero, nomeGenero, descGenero, subGenero) values (2, "Metal", "Músicas intensas e batidas agressivas.", "Metal progressivo, Metalcore");
+insert into GENERO (codGenero, nomeGenero, descGenero, subGenero) values (3, "Pop", "Melodias cativantes e dançáveis.", "Electropop, Synth-pop");
+insert into GENERO (codGenero, nomeGenero, descGenero, subGenero) values (4, "MPB - Música Popular Brasileira", "Derivada da Bossa Nova.", "N/A");
+insert into GENERO (codGenero, nomeGenero, descGenero, subGenero) values (5, "EDM - Electronic Dance Music", "Batidas dançantes, cheias de energia.", "N/A");
+
+/*Lista de Álbuns*/
+insert into ALBUM (codAlbum, nomeAlbum, tipoAlbum, dataAlbum, codArtista, codGravadora) values (1, "sua alegria foi cancelada", "Album", "2019-07-05", "1", "1");
+insert into ALBUM (codAlbum, nomeAlbum, tipoAlbum, dataAlbum, codArtista, codGravadora) values (2, "Run", "Album", "2015-03-20", "5", "2");
+insert into ALBUM (codAlbum, nomeAlbum, tipoAlbum, dataAlbum, codArtista, codGravadora) values (3, "Use Me", "Album", "2020-08-28", "3", "4");
+insert into ALBUM (codAlbum, nomeAlbum, tipoAlbum, dataAlbum, codArtista, codGravadora) values (4, "Micro", "EP", "2019-01-11", "2", "3");
+insert into ALBUM (codAlbum, nomeAlbum, tipoAlbum, dataAlbum, codArtista, codGravadora) values (5, "Duas da Tarde", "Single", "2018-08-31", "4", "5");
+
+/*Lista de Músicas*/
+/*Sua Alegria Foi Cancelada - Fresno*/
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (1, "O Arrocha Mais Triste Do Mundo", "Lucas Silveira", "Lucas Silveira", "00:03:08", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (2, "We'll Fight Together", "Lucas Silveira", "Lucas Silveira", "00:03:56", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (3, "Isso Não É Um Teste", "Lucas Silveira", "Lucas Silveira", "00:02:43", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (4, "Natureza Caos", "Lucas Silveira", "Lucas Silveira", "00:03:40", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (5, "Sua Alegria Foi Cancelada", "Lucas Silveira", "Lucas Silveira", "00:03:57", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (6, "Convicção", "Lucas Silveira", "Lucas Silveira", "00:03:31", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (7, "De Verdade", "Lucas Silveira", "Lucas Silveira", "00:03:45", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (8, "Cada Acidente", "Lucas Silveira", "Lucas Silveira", "00:04:05", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (9, "Quando Eu Caí", "Lucas Silveira", "Lucas Silveira", "00:05:12", "1", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (10, "Eu Não Sei Lidar", "Lucas Silveira", "Lucas Silveira", "00:04:28", "1", "1");
+/*Run - Alison Wonderland*/
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (11, "Run", "A Sholler, A Swanson, Luby, Urman", "Alison Wonderland, Djemba Djemba, AWE", "00:03:38", "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (12, "U Don't Know", "Sholler, Swanson, Burnett", "Alison Wonderland, Djemba Djemba",  "00:04:03", "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (13, "Take It To Reality", "Sholler, Swanson, Luby, Z Urman", "Alison Wonderland, Djemba Djemba", "00:03:52",  "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (14, "Naked (Alison Wonderland X Slumberjack)", "Sholler, F Ehlers, Yee Sheng Then","Alison Wonderland, SLUMBERJACK", "00:03:17", "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (15, "Carry On (featuring Johnny Nelson and GANZ)", "Scholler, Nelson, Saämena, Picchio","Alexandra Scholler, GANZ", "00:04:01", "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (16, "I Want U", "Alexandra Scholler, Andrew Swanson","Alexandra Scholler, Djemba Djemba", "00:04:01",  "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (17, "Games", "Alexandra Sholler, Andrew Swanson",  "Alexandra Scholler, Andrew Swanson", "00:03:30",  "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (18, "One More Hit", "Sholler, Swanson, Farwell",  "Scholler, Djemba Djemba, Goodnight Cody", "00:03:35",  "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (19, "Ignore", "Alexandra Sholler, Zachary Urman",  "Alexandra Scholler, AWE", "00:03:24",  "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (20, "Back It Up (with AWE)", "Alexandra Sholler, Zachary Urman",  "Alexandra Scholler, AWE", "00:03:54",  "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (21, "Cold", "Alexandra Sholler, Peder Losnegård",  "Alexandra Scholler, Lido", "00:03:32",  "2", "5");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (22, "Already Gone (featuring Brave and Lido)", "Sholler, Witika, Burnett, Picchio,  Losnegård",  "Alexandra Scholler, Lido", "00:04:01",  "2", "5");
+/*Use Me - pvris*/
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (23, "Gimme a Minute", "Company, English, JT Daly, Gunnulfsen", "JT Daly", "00:03:28", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (24, "Dead Weight", "Company, English, Daly, Gunnulfsen, Van Fleet", "JT Daly", "00:03:27", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (25, "Stay Gold", "JT Daly, Lyndsey Gunnulfsen", "JT Daly", "00:04:00", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (26, "Good to Be Alive", "Armbruster, JT Daly, Gunnulfsen", " Armbruster, JT Daly, Gunnulfsen", "00:03:17", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (27, "Death Of Me", "Armbruster, JT Daly, Gunnulfsen", "Armbruster, JT Daly, Gunnulfsen", "00:03:31", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (28, "Hallucinations", "JT Daly, Lyndsey Gunnulfsen, Sean Van Fleet", "JT Daly", "00:03:43", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (29, "Old Wounds", "Lyndsey Gunnulfsen", "JT Daly, Lyndsey Gunnulfsen", "00:04:55", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (30, "Loveless", "Gunnulfsen, JT Daly, Campany, Sean Van Fleet", "JT Daly, Lyndsey Gunnulfsen", "00:03:49", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (31, "January Rain", "Lyndsey Gunnulfsen, JT Daly", "JT Daly, Lyndsey Gunnulfsen", "00:03:31", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (32, "Use Me (featuring 070 Shake)", "Gunnulfsen, JT Daly, Campany, Sean Van Fleet", "JT Daly, Lyndsey Gunnulfsen", "00:03:23", "3", "3");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (33, "Wish You Well", "Gunnulfsen, JT Daly, Tranter, Skeltont", "JT Daly", "00:03:37", "3", "3");
+/*Micro - Jinjer*/
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (34, "Ape", "Jinjer", "Jinjer, Max Morton", "00:03:16", "4", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (35, "Dreadful Moments", "Jinjer", "Jinjer, Max Morton", "00:04:45", "4", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (36, "Teacher, Teacher", "Jinjer", "Jinjer, Max Morton", "00:05:51", "4", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (37, "Perennial", "Jinjer", "Jinjer, Max Morton", "00:04:37", "4", "1");
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (38, "Micro", "Jinjer", "Jinjer, Max Morton", "00:01:43", "4", "1");
+/*Duas Da Tarde - Silva*/
+insert into MUSICA (codMusica, nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero) values (39, "Duas da Tarde", "Lucas Silva", "Lucas Silva", "00:03:41", "5", "5");
+
+/*Lista de Próximos Concertos*/
+insert into CONCERTO (valorConcerto, lotacaoConcerto, localConcerto, dataHoraConcerto) values (150, 100, "Ópera de Arame, Curitiba", "2022-07-09 18:00:00");
+insert into CONCERTO (valorConcerto, lotacaoConcerto, localConcerto, dataHoraConcerto) values (150, 50, "Araújo Vianna, Porto Alegre", "2022-04-23 21:00:00");
+insert into CONCERTO (valorConcerto, lotacaoConcerto, localConcerto, dataHoraConcerto) values (100, 180, "Kavka Zappa, Antwerp, Belgium", "2022-05-05 21:00:00");
+insert into CONCERTO (valorConcerto, lotacaoConcerto, localConcerto, dataHoraConcerto) values (200, 500, "The Greak Theatre, Berkeley, USA", "2022-06-11 21:00:00");
+insert into CONCERTO (valorConcerto, lotacaoConcerto, localConcerto, dataHoraConcerto) values (300, 1500, "Festival d'été de Québec, Quebec City, Canada", "2022-07-13 21:00:00");
+/*Lista dos Artistas de cada Concerto*/
+insert into CONCERTO_ARTISTA (localConcerto, dataHoraConcerto, codArtista) values ("Ópera de Arame, Curitiba", "2022-07-09 18:00:00", 1);
+insert into CONCERTO_ARTISTA (localConcerto, dataHoraConcerto, codArtista) values ("Araújo Vianna, Porto Alegre", "2022-04-23 21:00:00", 1);
+insert into CONCERTO_ARTISTA (localConcerto, dataHoraConcerto, codArtista) values ("Kavka Zappa, Antwerp, Belgium", "2022-05-05 21:00:00", 3);
+insert into CONCERTO_ARTISTA (localConcerto, dataHoraConcerto, codArtista) values ("The Greak Theatre, Berkeley, USA", "2022-06-11 21:00:00", 5);
+insert into CONCERTO_ARTISTA (localConcerto, dataHoraConcerto, codArtista) values ("Festival d'été de Québec, Quebec City, Canada", "2022-07-13 21:00:00", 5);
+
+/*Usuário UM*/
+insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678901, "Luiza Um", "senha", "luizaum@mail.com", "2000-09-01", "Premium");
+insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (1, "Primeira Playlist", "Primeira playlist do BD \o/", "pública", 12345678901);
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (1, 1);		/*Arrocha da Fresno*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (7, 1);		/*De Verdade da Fresno*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (37, 1);	/*Perennial do Jinjer*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (29, 1);	/*Old Wounds do pvris*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (21, 1);	/*Cold da Alison Wonderland*/
+insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (2, "Favoritas", "Lista de Músicas Favoritadas", "privada", 12345678901);
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (1, 2);		/*Arrocha da Fresno*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (7, 2);		/*De Verdade da Fresno*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (37, 2);	/*Perennial do Jinjer*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (29, 2);	/*Old Wounds do pvris*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (21, 2);	/*Cold da Alison Wonderland*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (23, 2);	/*Gimme a Minute do pvris*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (38, 2);	/*Micro do Jinjer*/
+insert into MUSICA_PLAYLIST (codMusica, codPlaylist) values (36, 2);	/*Teacher, Teacher do Jinjer*/
+insert into USUARIO_ARTISTA (cpfUsuario, codArtista) values (12345678901, 1);
+insert into USUARIO_ARTISTA (cpfUsuario, codArtista) values (12345678901, 2);
+insert into USUARIO_ARTISTA (cpfUsuario, codArtista) values (12345678901, 3);
+insert into USUARIO_ARTISTA (cpfUsuario, codArtista) values (12345678901, 5);
+insert into USUARIO_PODCAST (cpfUsuario, codPodcast) values (12345678901, 1);
+insert into USUARIO_PODCAST (cpfUsuario, codPodcast) values (12345678901, 4);
+
+USE SPOTIFY_FINAL;
+/*5 tabelas mostrando as playlists - Produto Cartesiano (5 TABELAS)*/
+SELECT A.codPlaylist, A.nomePlaylist, C.nomeMusica, C.durMusica, D.nomeAlbum, E.nomeArtista FROM PLAYLIST A
+INNER JOIN MUSICA_PLAYLIST B ON (A.codPlaylist = B.codPlaylist)
+INNER JOIN MUSICA C ON (B.codMusica = C.codMusica)
+INNER JOIN ALBUM D ON (C.codAlbum = D.codAlbum)
+INNER JOIN ARTISTA E ON (D.codArtista = E.codArtista)
+ORDER BY codPlaylist ASC;
+
+/*Lista de atributos com a relação "Somente Bandas"*/
+SELECT nomeArtista, tipoArtista FROM ARTISTA WHERE tipoArtista = 'Banda';
+
+/*União das tabelas = Concerto e Concerto Artista  (3 TABELAS)*/
+SELECT A.dataHoraConcerto, A.localConcerto, C.nomeArtista FROM CONCERTO A
+INNER JOIN CONCERTO_ARTISTA B ON (A.localConcerto = B.localConcerto AND A.dataHoraConcerto = B.dataHoraConcerto)
+INNER JOIN ARTISTA C ON (B.codArtista = C.codArtista);
+
+/*Diferença (Artistas que não tem Albums*/
+SELECT nomeArtista FROM ARTISTA A
+LEFT JOIN ALBUM B
+ON (A.codArtista = B.codArtista)
+WHERE B.tipoAlbum != 'Album';
+
+/*Músicas no Álbum Sua Alegria Foi Cancelada (3 TABELAS) - Menos*/
+SELECT SUM(codMusica) AS "Faixa", A.nomeMusica, B.nomeAlbum, C.nomeArtista FROM MUSICA A
+INNER JOIN ALBUM B ON (A.codAlbum = B.codAlbum)
+INNER JOIN ARTISTA C ON (B.codArtista = C.codArtista)
+WHERE B.codAlbum = 1
+GROUP BY A.codMusica;
+
+/*CONTINUA INSERINDO DADOS DO USUÁRIO 1*/
+insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (3, "Episódios Favoritos", "Lista de Episódios Favoritados", "privada", 12345678901);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (3, 3);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (5, 3);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (1, 3);
+
+/*Episódios do PlaylistxEpisodioPlaylistxEpisodio- Produto (3 Tabelas)*/
+SELECT A.cpfUsuario, A.nomePlaylist, A.descPlaylist, A.statusPlaylist, 
+C.nomeEpisodio, C.dataLancEpisodio, C.descEpisodio, D.nomePodcast  FROM PLAYLIST A
+INNER JOIN episodio_playlist B ON (A.codPlaylist = B.codPlaylist)
+INNER JOIN EPISODIO C ON (C.codEpisodio = B.codEpisodio)
+INNER JOIN PODCAST D ON (C.codPodcast = D.codPodcast);
+
+/*Relação Gravadora, Artista e Album*/
+SELECT A.nomeGravadora, B.nomeArtista, C.nomeAlbum, C.dataAlbum FROM GRAVADORA A
+INNER JOIN ALBUM C ON (A.codGravadora = C.codGravadora)
+INNER JOIN artista B ON (B.codArtista = C.codArtista)
+ORDER BY dataAlbum DESC;
