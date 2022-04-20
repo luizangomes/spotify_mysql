@@ -9,10 +9,10 @@ connector = mysql.connector.connect(
 
 cursor = connector.cursor()
 
-sql = "insert into GRAVADORA(nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora) values (%s, %s, %s, %s, %s)"
-data = ("Bertelsmann Music Group (BMG)", "Bertelsmann Music Group (abreviado como BMG) foi uma das seis divisões da empresa alemã Bertelsmann, formada em 1987 para englobar as atividades relacionadas às gravações musicais da empresa.", "2008-10-01", "ativa", "Estados Unidos da América")
+create_gravadora = "insert into GRAVADORA(nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora) values (%s, %s, %s, %s, %s)"
+data = ("Gloob Gloob", "Teste.", "2008-10-01", "ativa", "Brasil")
 
-cursor.execute(sql, data)
+cursor.execute(create_gravadora, data)
 connector.commit()
 
 cursor.close()

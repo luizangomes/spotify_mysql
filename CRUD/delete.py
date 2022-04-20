@@ -9,10 +9,10 @@ connection = mysql.connector.connect(
 
 cursor = connection.cursor()
 
-sql = "DELETE FROM GRAVADORA WHERE codGravadora = %s"
+delete_gravadora = "DELETE FROM GRAVADORA WHERE codGravadora = %s"
 data = (1)
 
-cursor.execute(sql, data)
+cursor.execute(delete_gravadora, data)
 connection.commit()
 
 recordsaffected = cursor.rowcount

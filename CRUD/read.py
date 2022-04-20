@@ -9,9 +9,9 @@ connection = mysql.connector.connect(
 
 cursor = connection.cursor()
 
-sql = "SELECT * FROM GRAVADORA"
+read_gravadora = "SELECT * FROM GRAVADORA"
 
-cursor.execute(sql)
+cursor.execute(read_gravadora)
 results = cursor.fetchall()
 
 cursor.close()
