@@ -1,6 +1,8 @@
 from classesCP import Podcast, Episodio, Genero
 from conexao import MySQL
 from DAO import PodcastDAO, EpisodioDAO, GeneroDAO
+from prettytable import PrettyTable
+
 
 class RunPodcast:
     def __init__(self):
@@ -20,22 +22,23 @@ class RunPodcast:
     
     def readPodcast(self, codPodcast):
         podcasts = self.podcastDAO.read()
-        results = []
+        results = PrettyTable()
+        results.field_names = ['codPodcast', 'nomePodcast', 'generoPodcast', 'classificacaoPodcast', 'paisPodcast', 'imgPodcast']
         if codPodcast == 0:
             for iterate in podcasts:
                 a, b, c, d, e, f = iterate
-                podcasts = {'codPodcast': a, 'nomePodcast': b, 'generoPodcast': c, 'classificacaoPodcast': d, 'paisPodcast': e, 'imgPodcast': f}
-                results.append(podcasts)
-            for r in results:
-                print(r)
+                podcasts = {a,  b, c, d, e, f}
+                podcast = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
+                results.add_row(podcast)
+            print(results)
         else:
             for iterate in podcasts:
                 a, b, c, d, e, f = iterate
-                podcasts = {'codPodcast': a, 'nomePodcast': b, 'generoPodcast': c, 'classificacaoPodcast': d, 'paisPodcast': e, 'imgPodcast': f}
                 if a == codPodcast:
-                    results.append(podcasts)
-            for r in results:
-                print(r)
+                    podcasts = {a, b, c, d, e, f}
+                    podcast = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
+                    results.add_row(podcast)
+            print(results)
 
     
     def inputUpdatePodcast(self, codPodcast):
@@ -79,22 +82,23 @@ class RunEpisodio:
     
     def readEpisodio(self, codEpisodio):
         episodes = self.episodioDAO.read()
-        results = []
+        results = PrettyTable()
+        results.field_names = ['codEpisodio', 'nomeEpisodio', 'dataLancEpisodio', 'descEpisodio', 'durEpisodio', 'codPodcast']
         if codEpisodio == 0:
             for iterate in episodes:
                 a, b, c, d, e, f = iterate
-                episodes = {'codEpisodio': a, 'nomeEpisodio': b, 'dataLancEpisodio': c, 'descEpisodio': d, 'durEpisodio': e, 'codPodcast': f}
-                results.append(episodes)
-            for r in results:
-                print(r)
+                episodes = {a, b, c, d, e, f}
+                episode = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
+                results.add_row(episode)
+            print(results)
         else:
             for iterate in episodes:
                 a, b, c, d, e, f = iterate
-                episodes = {'codEpisodio': a, 'nomeEpisodio': b, 'dataLancEpisodio': c, 'descEpisodio': d, 'durEpisodio': e, 'codPodcast': f}
                 if a == codEpisodio:
-                    results.append(episodes)
-            for r in results:
-                print(r)
+                    episodes = {a, b, c, d, e, f}
+                    episode = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
+                    results.add_row(episode)
+            print(results)
 
     
     def inputUpdateEpisodio(self, codEpisodio):
@@ -139,22 +143,23 @@ class RunGenero:
     
     def readGenero(self, codGenero):
         genres = self.generoDAO.read()
-        results = []
+        results = PrettyTable()
+        results.field_names = ['codGenero','imgGenero', 'descGenero', 'subGenero', 'nomeGenero']
         if codGenero == 0:
             for iterate in genres:
                 a, b, c, d, e = iterate
-                genres = {'codGenero': a,'imgGenero': b, 'descGenero': c, 'subGenero': d, 'nomeGenero': e}
-                results.append(genres)
-            for r in results:
-                print(r)
+                genres = [a, b, c, d, e]
+                genre = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e)]
+                results.add_row(genre)
+            print(results)
         else:
             for iterate in genres:
                 a, b, c, d, e = iterate
-                genres = {'codGenero': a,'imgGenero': b, 'descGenero': c, 'subGenero': d, 'nomeGenero': e}
                 if a == codGenero:
-                    results.append(genres)
-            for r in results:
-                print(r)
+                    genres = [a, b, c, d, e]
+                    genre = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e)]
+                    results.add_row(genre)
+            print(results)
 
     
     def inputUpdateGenero(self, codGenero):
@@ -173,8 +178,8 @@ class RunGenero:
         print(result)
 
     
-#Teste = RunGenero()
+Teste = RunGenero()
 #Teste.inputCreateGenero()
-#const = int(input("Insira o código do Episodio à ser deletado:"))
+const = int(input("Insira o código do Episodio à ser deletado:"))
 #Teste.inputDeleteEpisodio(codPodcastUpdate)
-#Teste.readGenero(const)
+Teste.readGenero(const)
