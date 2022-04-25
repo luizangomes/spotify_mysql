@@ -178,8 +178,8 @@ class RunGenero:
         print(result)
 
     
-Teste = RunGenero()
+#Teste = RunGenero()
 #Teste.inputCreateGenero()
-const = int(input("Insira o código do Episodio à ser deletado:"))
+#const = int(input("Insira o código do Episodio à ser deletado:"))
 #Teste.inputDeleteEpisodio(codPodcastUpdate)
-Teste.readGenero(const)
+#Teste.readGenero(const)
