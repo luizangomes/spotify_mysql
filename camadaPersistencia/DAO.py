@@ -1,19 +1,83 @@
-from classesCP import Podcast, Episodio, Genero
+from classesCP import Podcast, Episodio, Genero, Gravadora
 from conexao import MySQL
 
-class PodcastDAO(Podcast):
+class GravadoraDAO():
     def __init__(self):
-        self.codPodcast = ''
-        self.nomePodcast = ''
-        self.generoPodcast = ''
-        self.classificacaoPodcast = ''
-        self.paisPodcast = ''
-        self.imgPodcast = ''
+        pass
+    
+    def create(self, Gravadora):
+        try:
+            dados = {'nomeGravadora': Gravadora.nomeGravadora,
+                     'bioGravadora': Gravadora.bioGravadora,
+                     'dataGravadora': Gravadora.dataGravadora,
+                     'statusGravadora': Gravadora.statusGravadora,
+                     'paisGravadora': Gravadora.paisGravadora}
+            sql = ("INSERT INTO GRAVADORA (nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora)"
+                    "VALUES (%(nomeGravadora)s, %(bioGravadora)s, %(dataGravadora)s, %(statusGravadora)s, %(paisGravadora)s)")
+            self.conn(sql, dados)
+            return dict(message='Gravadora created')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def read(self):
+        try:
+            sql = "SELECT * FROM GRAVADORA"
+            result = self.conn_r(sql)
+            return result
+        except Exception as e:
+            return dict(message=e.message)
+
+    def delete(self, codGravadora):
+        try:
+            sql = "DELETE FROM GRAVADORA WHERE codGravadora = %d" % (codGravadora)
+            self.conn(sql, dados=None)
+            return dict(message='Gravadora deleted')
+        except Exception as e:
+            return dict(message=e.message)
+
+    #def update(self, Gravadora, codGravadora):
+    #    try:
+    #        sql = "UPDATE GRAVADORA SET nomeGravadora = %(nomeGravadora)s, bioGravadora = %(bioGravadora)s, dataGravadora = %(dataGravadora)s, statusGravadora = %(statusGravadora)s, paisGravadora = %(paisGravadora)s) WHERE codGravadora = %(codGravadora)d"
+    #        dados = {'nomeGravadora': Gravadora.nomeGravadora,
+    #                 'bioGravadora': Gravadora.bioGravadora,
+    #                 'dataGravadora': Gravadora.dataGravadora,
+    #                 'statusGravadora': Gravadora.statusGravadora,
+    #                 'paisGravadora': Gravadora.paisGravadora}
+    #        self.conn(sql, dados)
+    #        return dict(message='Gravadora updated')
+    #    except Exception as e:
+    #        return dict(message=e.message)
+
+    def conn(self, sql, dados):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql, dados)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def conn_r(self, sql):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        return result
+
+
+
+class PodcastDAO():
+    def __init__(self):
+        pass
 
     def create(self, Podcast):
         try:
-            dados = {'nomePodcast': Podcast.nomePodcast, 'generoPodcast': Podcast.generoPodcast, 'classificacaoPodcast': Podcast.classificacaoPodcast, 'paisPodcast': Podcast.paisPodcast, 'imgPodcast': Podcast.imgPodcast}
-            sql = ("insert into PODCAST (nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast, imgPodcast) values (%(nomePodcast)s, %(generoPodcast)s, %(classificacaoPodcast)s, %(paisPodcast)s, %(imgPodcast)s)")
+            dados = {'nomePodcast': Podcast.nomePodcast, 
+                     'generoPodcast': Podcast.generoPodcast, 
+                     'classificacaoPodcast': Podcast.classificacaoPodcast, 
+                     'paisPodcast': Podcast.paisPodcast, 
+                     'imgPodcast': Podcast.imgPodcast}
+            sql = ("INSERT INTO PODCAST (nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast, imgPodcast)" 
+                    "VALUES (%(nomePodcast)s, %(generoPodcast)s, %(classificacaoPodcast)s, %(paisPodcast)s, %(imgPodcast)s)")
             self.conn(sql, dados)
             return dict(message='Podcast created')
         except Exception as e:
@@ -29,8 +93,13 @@ class PodcastDAO(Podcast):
 
     def update(self, Podcast, codPodcast):
         try:
-            sql = "UPDATE  PODCAST SET nomePodcast = %(nomePodcast)s, generoPodcast=%(generoPodcast)s, classificacaoPodcast=%(classificacaoPodcast)s, paisPodcast=%(paisPodcast)s, imgPodcast=%(imgPodcast)s) WHERE codPodcast= %(codPodcast)d"
-            dados = {'codPodcast': codPodcast, 'nomePodcast': Podcast.nomePodcast, 'generoPodcast': Podcast.generoPodcast, 'classificacaoPodcast': Podcast.classificacaoPodcast, 'paisPodcast': Podcast.paisPodcast, 'imgPodcast': Podcast.imgPodcast}
+            sql = "UPDATE  PODCAST SET nomePodcast = %(nomePodcast)s, generoPodcast = %(generoPodcast)s, classificacaoPodcast = %(classificacaoPodcast)s, paisPodcast = %(paisPodcast)s, imgPodcast = %(imgPodcast)s) WHERE codPodcast = %(codPodcast)d"
+            dados = {'codPodcast': int(codPodcast),
+                     'nomePodcast': Podcast.nomePodcast, 
+                     'generoPodcast': Podcast.generoPodcast, 
+                     'classificacaoPodcast': Podcast.classificacaoPodcast, 
+                     'paisPodcast': Podcast.paisPodcast, 
+                     'imgPodcast': Podcast.imgPodcast}
             self.conn(sql, dados)
             return dict(message='Podcast updated')
         except Exception as e:
@@ -45,12 +114,12 @@ class PodcastDAO(Podcast):
             return dict(message=e.message)
 
     
-    def search(self, Podcast, codPodcast):
+    def search(self, codPodcast):
         try:
-            sql = "SELECT nomePodcast, generoPodcast,classificacaoPodcast, paisPodcast, imgPodcast FROM PODCAST where codPodcast = %d" % (codPodcast)
+            sql = "SELECT nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast, imgPodcast FROM PODCAST WHERE codPodcast = %d" % (codPodcast)
             result = self.conn_r(sql)
             nomePodcast, generoPodcast, classificacaoPodcast, paisPodcast, imgPodcast = result[0]
-            pod = Podcast
+            pod = Podcast()
             pod.nomePodcast = nomePodcast
             pod.generoPodcast = generoPodcast
             pod.classificacaoPodcast = classificacaoPodcast
@@ -77,14 +146,9 @@ class PodcastDAO(Podcast):
 
 
 
-class EpisodioDAO(Episodio):
+class EpisodioDAO():
     def __init__(self):
-        self.codEpisodio = ''
-        self.nomeEpisodio = ''
-        self.dataLancEpisodio = ''
-        self.descEpisodio = ''
-        self.durEpisodio = ''
-        self.codPodcast = ''
+        pass
 
     def create(self, Episodio):
         try:
@@ -153,13 +217,9 @@ class EpisodioDAO(Episodio):
 
 
 
-class GeneroDAO(Genero):
+class GeneroDAO():
     def __init__(self):
-        self.codGenero = ''
-        self.nomeGenero = ''
-        self.subGenero = ''
-        self.descGenero = ''
-        self.imgGenero = ''
+        pass
 
     def create(self, Genero):
         try:

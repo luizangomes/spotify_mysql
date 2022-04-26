@@ -1,6 +1,52 @@
-from classesCP import Podcast, Episodio, Genero
+from classesCP import Podcast, Episodio, Genero, Gravadora
 from conexao import MySQL
-from DAO import PodcastDAO, EpisodioDAO, GeneroDAO
+from DAO import PodcastDAO, EpisodioDAO, GeneroDAO, GravadoraDAO
+
+class RunGravadora:
+    def __init__(self):
+        self.gravadoraDAO = GravadoraDAO()
+
+    def inputCreateGravadora(self):
+        addGravadora = Gravadora()
+        print("Insira os dados da nova Gravadora: ")
+        addGravadora.nomeGravadora = input("Nome da Gravadora: ")
+        addGravadora.bioGravadora = input("Biografia da Gravadora: ")
+        addGravadora.dataGravadora = input("Data de criação da Gravadora: ")
+        addGravadora.statusGravadora = input("A Gravadora está ativa? ")
+        addGravadora.paisGravadora = input("País de Origem: ")
+        newGravadora = GravadoraDAO()
+        result = newGravadora.create(addGravadora)
+        print(result)
+
+    def readGravadora(self, codGravadora):
+        gravadoras = self.gravadoraDAO.read()
+        results = []
+        if codGravadora == 0:
+            for iterate in gravadoras:
+                a, b, c, d, e, f = iterate
+                gravadoras = {'codGravadora': a, 'nomeGravadora': b, 'bioGravadora': c, 'dataGravadora': d, 'statusGravadora': e, 'paisGravadora': f}
+                results.append(gravadoras)   
+            for r in results:
+                print(r)
+        else:
+            for iterate in gravadoras:
+                a, b, c, d, e, f = iterate
+                gravadoras = {'codGravadora': a, 'nomeGravadora': b, 'bioGravadora': c, 'dataGravadora': d, 'statusGravadora': e, 'paisGravadora': f}
+                if a == codGravadora:
+                    results.append(gravadoras)
+            for r in results:
+                print(r)
+
+    def inputDeleteGravadora(self, codGravadora):
+        result = self.gravadoraDAO.delete(codGravadora)
+        print(result)
+
+Teste = RunGravadora()
+const = int(input("Insira o código da Gravadora: "))
+#Teste.inputCreateGravadora()
+#Teste.readGravadora(const)
+Teste.inputDeleteGravadora(const)
+
 
 class RunPodcast:
     def __init__(self):
@@ -8,12 +54,12 @@ class RunPodcast:
 
     def inputCreatePodcast(self):
         addPodcast = Podcast()
-        print("Insira os dados do novo Podcast:")
-        addPodcast.nomePodcast = input("Nome do Episódio:   ")
-        addPodcast.generoPodcast = input("Gênero do Podcast:    ")
-        addPodcast.classificacaoPodcast = input("Classificação de Podcast:  ")
+        print("Insira os dados do novo Podcast: ")
+        addPodcast.nomePodcast = input("Nome do Podcast: ")
+        addPodcast.generoPodcast = input("Gênero do Podcast: ")
+        addPodcast.classificacaoPodcast = input("Classificação de Podcast: ")
         addPodcast.paisPodcast = input("País de Origem: ")
-        addPodcast.imgPodcast = input("Importar imagem:"    )
+        addPodcast.imgPodcast = input("Importar imagem: ")
         newPodcast = PodcastDAO()
         result = newPodcast.create(addPodcast)
         print(result)
@@ -36,30 +82,31 @@ class RunPodcast:
                     results.append(podcasts)
             for r in results:
                 print(r)
-
     
     def inputUpdatePodcast(self, codPodcast):
-        updatePodcast = Podcast
+        podcast = self.podcastDAO.search(codPodcast)
         print("Dados para serem atualizados:")
-        updatePodcast.nomePodcast = input("Nome do Podcast: ")
-        updatePodcast.generoPodcast = input("Gênero do Podcast: ")
-        updatePodcast.classificacaoPodcast = input("Classificação de Podcast:   ")
-        updatePodcast.paisPodcast = input("País de Origem: ")
-        updatePodcast.imgPodcast = input("Importar imagem:  ")
-        update = PodcastDAO()
-        result = update.search(updatePodcast, codPodcast)
+        podcast.nomePodcast = input("Nome do Podcast: ")
+        podcast.generoPodcast = input("Genero do Podcast: ")
+        podcast.classificacaoPodcast = input("Classificação do Podcast: ")
+        podcast.paisPodcast = input("País de Origem: ")
+        podcast.imgPodcast = input("Importar imagem: ")
+        updatePodcast = PodcastDAO()
+        result = updatePodcast.update(podcast, codPodcast)
         print(result)
     
     def inputDeletePodcast(self, codPodcast):
         result = self.podcastDAO.delete(codPodcast)
         print(result)
-
     
 #Teste = RunPodcast()
-#codPodcastUpdate = int(input("Insira o código do Podcast à ser deletado:"))
+#codPodcastUpdate = int(input("Insira o código do Podcast: "))
+#Teste.inputUpdatePodcast(codPodcast)
 #Teste.inputDeletePodcast(codPodcastUpdate)
 #Teste.inputCreatePodcast()
 #Teste.readPodcast(codPodcastUpdate)
+
+
     
 class RunEpisodio:
     def __init__(self):
@@ -112,13 +159,13 @@ class RunEpisodio:
     def inputDeleteEpisodio(self, codEpisodio):
         result = self.episodioDAO.delete(codEpisodio)
         print(result)
-
     
 #Teste = RunEpisodio()
+#const = int(input("Insira o código do Episodio: "))
 #Teste.inputCreateEpisodio()
-#const = int(input("Insira o código do Episodio à ser deletado:"))
-#Teste.inputDeleteEpisodio(codPodcastUpdate)
+#Teste.inputDeleteEpisodio(const)
 #Teste.readEpisodio(const)
+#Teste.inputUpdateEpisodio(const)
 
 
 
@@ -171,10 +218,10 @@ class RunGenero:
     def inputDeleteGenero(self, codGenero):
         result = self.generoDAO.delete(codGenero)
         print(result)
-
     
 #Teste = RunGenero()
+#const = int(input("Insira o código do Episodio:"))
 #Teste.inputCreateGenero()
-#const = int(input("Insira o código do Episodio à ser deletado:"))
-#Teste.inputDeleteEpisodio(codPodcastUpdate)
+#Teste.inputDeleteGenero(const)
 #Teste.readGenero(const)
+#Teste.inputUpdateGenero(const)
