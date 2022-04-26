@@ -1,7 +1,7 @@
 from classesCP import Podcast, Episodio, Genero
-from conexao import MySQL
 from DAO import PodcastDAO, EpisodioDAO, GeneroDAO
 from prettytable import PrettyTable
+from blobMaker import BlobSolver
 
 
 class RunPodcast:
@@ -11,11 +11,14 @@ class RunPodcast:
     def inputCreatePodcast(self):
         addPodcast = Podcast()
         print("Insira os dados do novo Podcast:")
-        addPodcast.nomePodcast = input("Nome do Episódio:   ")
+        addPodcast.nomePodcast = input("Nome do Podcast:   ")
         addPodcast.generoPodcast = input("Gênero do Podcast:    ")
         addPodcast.classificacaoPodcast = input("Classificação de Podcast:  ")
         addPodcast.paisPodcast = input("País de Origem: ")
-        addPodcast.imgPodcast = input("Importar imagem:"    )
+        print("Importar imagem:"    )
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        addPodcast.imgPodcast = bs.convertToBinaryData(imgpath)
         newPodcast = PodcastDAO()
         result = newPodcast.create(addPodcast)
         print(result)
@@ -48,7 +51,9 @@ class RunPodcast:
         updatePodcast.generoPodcast = input("Gênero do Podcast: ")
         updatePodcast.classificacaoPodcast = input("Classificação de Podcast:   ")
         updatePodcast.paisPodcast = input("País de Origem: ")
-        updatePodcast.imgPodcast = input("Importar imagem:  ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        updatePodcast.imgPodcast = bs.convertToBinaryData(imgpath)
         update = PodcastDAO()
         result = update.search(updatePodcast, codPodcast)
         print(result)
@@ -136,7 +141,10 @@ class RunGenero:
         addGenero.nomeGenero = input("Nome do Genero:   ")
         addGenero.subGenero = input("Sub-Generos:    ")
         addGenero.descGenero = input("Descrição:  ")
-        addGenero.imgGenero = input("Imagem: ")
+        print("Imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        addGenero.imgGenero = bs.convertToBinaryData(imgpath)
         newGenero = GeneroDAO()
         result = newGenero.create(addGenero)
         print(result)
@@ -168,7 +176,10 @@ class RunGenero:
         updateGenero.nomeGenero = input("Nome do Genero:   ")
         updateGenero.subGenero = input("Sub-Generos:    ")
         updateGenero.descGenero = input("Descrição:  ")
-        updateGenero.imgGenero = input("Imagem: ")
+        print("Imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        updateGenero.imgGenero = bs.convertToBinaryData(imgpath)
         update = GeneroDAO()
         result = update.search(updateGenero, codGenero)
         print(result)

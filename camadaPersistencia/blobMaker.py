@@ -1,4 +1,7 @@
-import PySimpleGUI as sg
+from tkinter import filedialog
+from tkinter import *
+import tkinter as tk
+
 
 class BlobSolver:
     def convertToBinaryData(filename):
@@ -6,12 +9,9 @@ class BlobSolver:
             binaryData = file.read()
         return binaryData
     
-    sg.theme('Dark Amber')
-    layout = [[sg.Text("Cadastro de imagens:")], 
-            [sg.Text("Procure o arquivo que gostaria de cadatrar:"), sg.FileBrowse(key="getImage"), sg.Submit()]]
-    window = sg.Window("Micro Micro Spotify", layout)
-    while True:
-        event, values = window.read()
-        if event == "OK" or event == sg.WIN_CLOSED:
-            break
-    window.close()
+    def insertBLOB():
+        root = tk.Tk()
+        root.withdraw()
+
+        file_path = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes =(("image", ".jpeg"), ("image", ".png"),("image", ".jpg"),("all files","*.*")))
+        return file_path

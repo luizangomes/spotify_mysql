@@ -1,15 +1,12 @@
 from operator import gt
 import os
-import mysql.connector
-from classesCP import Podcast, Episodio, Genero
-from DAO import PodcastDAO, EpisodioDAO, GeneroDAO
 from runDAO import RunPodcast, RunEpisodio, RunGenero
 
 header ="\n |\/|  o   _  ._   _     |\/|  o   _  ._   _    \n |  |  |  (_  |   (_)    |  |  |  (_  |   (_)   \n\n  __                      _     \n (_   ._    _   _|_  o  _|_      \n __)  |_)  (_)   |_  |   |   \/   \n      |                      /    \n"
 
 
 def crudInterface():
-    print("\n\nOlá, este é o Micro Micro Spotify, aqui podemos consultar, inserir, deletar e atualizar dados do nosso banco de dados.\nNo momento você gostaria de utilizar qual classe do banco de Dados? Escolha entre as disponíveis abaixo:\n(1)   Álbum\n(2)   Artista\n(3)   Concerto\n(4)   Episódio\n(5)   Gênero\n(6)   Gravadora\n(7)   Música\n(8)   Playlist\n(9)   Podcast\n(10)   Usuário\n(0) SAIR DO PROGRAMA\n(digite somente o número da classe escolhida)")
+    print("\n\nOlá, este é o Micro Micro Spotify, aqui podemos consultar, inserir, deletar e atualizar dados do nosso banco de dados.\nNo momento você gostaria de utilizar qual classe do banco de Dados? Escolha entre as disponíveis abaixo:\n(1)   Álbum\n(2)   Artista\n(3)   Concerto\n(4)   Episódio (OK)\n(5)   Gênero (OK)\n(6)   Gravadora\n(7)   Música\n(8)   Playlist\n(9)   Podcast (OK)\n(10)   Usuário\n(0) SAIR DO PROGRAMA\n(digite somente o número da classe escolhida)")
     value = input("ESCREVA O NÚMERO DA CLASSE ESCOLHIDA:  ")
     return value
 
@@ -48,7 +45,7 @@ while interromper == 0:
         if gen == 3:
             escolha = int(input("Escolha um gênero para atualizar, digite o seu código\nINPUT = "))
             generoCRUD.inputUpdateGenero(escolha)
-        if ep == 4:
+        if gen == 4:
             escolha = int(input("Escolha um gênero para deletar, digite o seu código\nINPUT = "))
             generoCRUD.inputDeleteGenero(escolha)
 
@@ -59,13 +56,13 @@ while interromper == 0:
         if pod == 1:
             podcastCRUD.inputCreatePodcast()
         if pod == 2:
-            escolha = int(input("Se gostaria de ver a lista geral de Gêneros insira 0, se for um gênero específico digite seu código\nINPUT = "))
+            escolha = int(input("Se gostaria de ver a lista geral de Podcasts insira 0, se for um podcast específico digite seu código\nINPUT = "))
             podcastCRUD.readPodcast(escolha)
         if pod == 3:
-            escolha = int(input("Escolha um gênero para atualizar, digite o seu código\nINPUT = "))
+            escolha = int(input("Escolha um podcast para atualizar, digite o seu código\nINPUT = "))
             podcastCRUD.inputUpdatePodcast(escolha)
         if pod == 4:
-            escolha = int(input("Escolha um gênero para deletar, digite o seu código\nINPUT = "))
+            escolha = int(input("Escolha um podcast para deletar, digite o seu código\nINPUT = "))
             podcastCRUD.inputDeletePodcast(escolha)
 
     interromper = int(input("Você quer fechar o programa? (Digite: 1 - Sim ou 0 - Não)  "))
