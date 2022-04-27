@@ -9,4 +9,3 @@ pip install flask-mysql
 - Agora, vamos abrir o projeto Web App:
 ```
 python main.py
-``
