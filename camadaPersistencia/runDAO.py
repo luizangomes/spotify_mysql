@@ -1,7 +1,78 @@
-from classesCP import Podcast, Episodio, Genero, Gravadora, Artista, Album
-from DAO import PodcastDAO, EpisodioDAO, GeneroDAO, GravadoraDAO, ArtistaDAO, AlbumDAO
+from classesCP import Podcast, Episodio, Genero, Gravadora, Artista, Album, Usuario, Musica, Playlist
+from DAO import PodcastDAO, EpisodioDAO, GeneroDAO, GravadoraDAO, ArtistaDAO, AlbumDAO, UsuarioDAO, MusicaDAO, PlaylistDAO
 from prettytable import PrettyTable
 from blobMaker import BlobSolver
+
+
+
+class RunUsuario:
+    def __init__(self):
+        self.usuarioDAO = UsuarioDAO()
+
+    def inputCreateUsuario(self):
+        addUsuario = Usuario()
+        print("Insira os dados do novo Usuário: ")
+        addUsuario.cpfUsuario = input("Cpf do Usuário: ")
+        addUsuario.nomeUsuario = input("Nome do Usuário: ")
+        addUsuario.emailUsuario = input("Email do Usuário: ")
+        addUsuario.senhaUsuario = input("Digite a senha: ")
+        addUsuario.dataNascUsuario = input("Data de nascimento: ")
+        addUsuario.tipoUsuario = input("Tipo de Usuário (Premium/Normal): ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        addUsuario.imgUsuario = bs.convertToBinaryData(imgpath)
+        newUsuario = UsuarioDAO()
+        result = newUsuario.create(addUsuario)
+        print(result)
+
+    def readUsuario(self, cpfUsuario):
+        usuarios = self.usuarioDAO.read()
+        results = PrettyTable()
+        results.field_names = ['cpfUsuario', 'nomeUsuario', 'emailUsuario', 'senhaUsuario', 'dataNascUsuario', 'tipoUsuario', 'imgUsuario']
+        if cpfUsuario == 0:
+            for iterate in usuarios:
+                a, b, c, d, e, f, g = iterate
+                usuarios = {a, b, c, d, e, f, g}
+                usuario = ['%s'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                results.add_row(usuario)
+            print(results)
+        else:
+            for iterate in usuarios:
+                a, b, c, d, e, f, g = iterate
+                if a == cpfUsuario:
+                    usuarios = {a, b, c, d, e, f, g}
+                    usuario = ['%s'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                    results.add_row(usuario)
+            print(results)
+
+    def inputDeleteUsuario(self, cpfUsuario):
+        result = self.usuarioDAO.delete(cpfUsuario)
+        print(result)
+
+    def inputUpdateUsuario(self, cpfUsuario):
+        usuario = self.usuarioDAO.search(cpfUsuario)
+        print("Dados para serem atualizados: ")
+        usuario.nomeUsuario = input("Nome do Usuário: ")
+        usuario.senhaUsuario = input("Digite a senha: ")
+        usuario.dataNascUsuario = input("Data de nascimento: ")
+        usuario.tipoUsuario = input("Tipo de Usuário (Premium/Normal): ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        usuario.imgUsuario = bs.convertToBinaryData(imgpath)
+        updateUsuario = UsuarioDAO()
+        result = updateUsuario.update(usuario, cpfUsuario)
+        print(result)
+
+#Teste = RunUsuario()
+#const = input("Insira o código do Usuário: ")
+#Teste.inputCreateUsuario()
+#Teste.readUsuario(const)
+#Teste.inputUpdateUsuario(const)
+#Teste.inputDeleteUsuario(const)
+
+
 
 class RunGravadora:
     def __init__(self):
@@ -55,7 +126,6 @@ class RunGravadora:
         result = updateGravadora.update(gravadora, codGravadora)
         print(result)
 
-
 #Teste = RunGravadora()
 #const = int(input("Insira o código da Gravadora: "))
 #Teste.inputCreateGravadora()
@@ -92,7 +162,7 @@ class RunArtista:
         if codArtista == 0:
             for iterate in artistas:
                 a, b, c, d, e, f, g = iterate
-                podcasts = {a, b, c, d, e, f, g}
+                artistas = {a, b, c, d, e, f, g}
                 artista = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
                 results.add_row(artista)   
             print(results)
@@ -115,7 +185,10 @@ class RunArtista:
         artista.tipoArtista = input("Tipo de Artista: ")
         artista.statusArtista = input("Status do(a) Artista: ")
         artista.paisArtista = input("País de Origem: ")
-        artista.imgArtista = input("Importar imagem: ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        artista.imgArtista = bs.convertToBinaryData(imgpath)
         artista.codGravadora = input("Código da Gravadora: ")
         updateArtista = ArtistaDAO()
         result = updateArtista.update(artista, codArtista)
@@ -149,22 +222,23 @@ class RunAlbum:
 
     def readAlbum(self, codAlbum):
         albuns = self.albumDAO.read()
-        results = []
+        results = PrettyTable()
+        results.field_names = ['codAlbum', 'nomeAlbum', 'tipoAlbum', 'dataAlbum', 'imgAlbum', 'codArtista', 'codGravadora']
         if codAlbum == 0:
             for iterate in albuns:
                 a, b, c, d, e, f, g = iterate
-                albuns = {'codAlbum': a, 'nomeAlbum': b, 'tipoAlbum': c, 'dataAlbum': d, 'imgAlbum': e, 'codArtista': f, 'codGravadora': g}
-                results.append(albuns)   
-            for r in results:
-                print(r)
+                albuns = {a, b, c, d, e, f, g}
+                album = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                results.add_row(album)   
+            print(results)
         else:
             for iterate in albuns:
                 a, b, c, d, e, f, g = iterate
-                albuns = {'codAlbum': a, 'nomeAlbum': b, 'tipoAlbum': c, 'dataAlbum': d, 'imgAlbum': e, 'codArtista': f, 'codGravadora': g}
                 if a == codAlbum:
-                    results.append(albuns)
-            for r in results:
-                print(r)
+                    albuns = {a, b, c, d, e, f, g}
+                    album = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                    results.add_row(album)
+            print(results)
 
     def inputDeleteAlbum(self, codAlbum):
         result = self.albumDAO.delete(codAlbum)
@@ -176,7 +250,10 @@ class RunAlbum:
         album.nomeAlbum = input("Nome do Álbum: ")
         album.tipoAlbum = input("Tipo de Álbum: ")
         album.dataAlbum = input("Data de lançamento do Álbum (YYYY-MM-DD): ")
-        album.imgAlbum = input("Importar imagem: ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        album.imgAlbum = bs.convertToBinaryData(imgpath)
         album.codArtista = input("Código do Artista: ")
         album.codGravadora = input("Código da Gravadora: ")
         updateAlbum = AlbumDAO()
@@ -189,6 +266,136 @@ class RunAlbum:
 #Teste.readAlbum(const)
 #Teste.inputUpdateAlbum(const)
 #Teste.inputDeleteAlbum(const)
+
+
+
+class RunMusica:
+    def __init__(self):
+        self.musicaDAO = MusicaDAO()
+
+    def inputCreateMusica(self):
+        addMusica = Musica()
+        print("Insira os dados da nova Musica: ")
+        addMusica.nomeMusica = input("Nome da Música: ")
+        addMusica.compositor = input("Compositor da Música: ")
+        addMusica.produtor = input("Produtor da Música: ")
+        addMusica.durMusica = input("Duração da Música: ")
+        addMusica.codAlbum = input("Código do Álbum: ")
+        addMusica.codGenero = input("Código do Gênero: ")
+        newMusica = MusicaDAO()
+        result = newMusica.create(addMusica)
+        print(result)
+
+    def readMusica(self, codMusica):
+        musicas = self.musicaDAO.read()
+        results = PrettyTable()
+        results.field_names = ['codMusica', 'nomeMusica', 'compositor', 'produtor', 'durMusica', 'codAlbum', 'codGenero']
+        if codMusica == 0:
+            for iterate in musicas:
+                a, b, c, d, e, f, g = iterate
+                musicas = {a, b, c, d, e, f, g}
+                musica = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                results.add_row(musica)   
+            print(results)
+        else:
+            for iterate in musicas:
+                a, b, c, d, e, f, g = iterate
+                if a == codMusica:
+                    musicas = {a, b, c, d, e, f, g}
+                    musica = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                    results.add_row(musica)
+            print(results)
+
+    def inputDeleteMusica(self, codMusica):
+        result = self.musicaDAO.delete(codMusica)
+        print(result)
+
+    def inputUpdateMusica(self, codMusica):
+        musica = self.musicaDAO.search(codMusica)
+        print("Dados para serem atualizados: ")
+        musica.nomeMusica = input("Nome da Música: ")
+        musica.compositor = input("Compositor da Música: ")
+        musica.produtor = input("Produtor da Música: ")
+        musica.durMusica = input("Duração da Música: ")
+        musica.codAlbum = input("Código do ÁLbum: ")
+        musica.codGenero = input("Código do Gênero: ")
+        updateMusica = MusicaDAO()
+        result = updateMusica.update(musica, codMusica)
+        print(result)
+
+#Teste = RunMusica()
+#const = int(input("Insira o código da Música: "))
+#Teste.inputCreateMusica()
+#Teste.readMusica(const)
+#Teste.inputUpdateMusica(const)
+#Teste.inputDeleteMusica(const)
+
+
+
+class RunPlaylist:
+    def __init__(self):
+        self.playlistDAO = PlaylistDAO()
+
+    def inputCreatePlaylist(self):
+        addPlaylist = Playlist()
+        print("Insira os dados da nova Playlist: ")
+        addPlaylist.nomePlaylist = input("Nome da Playlist: ")
+        addPlaylist.descPlaylist = input("Descrição da Playlist: ")
+        addPlaylist.statusPlaylist = input("Status da Playlist (público/privado): ")
+        print("Imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        addPlaylist.imgPlaylist = bs.convertToBinaryData(imgpath)
+        addPlaylist.cpfUsuario = input("Cpf do Usuário: ")
+        newPlaylist = PlaylistDAO()
+        result = newPlaylist.create(addPlaylist)
+        print(result)
+    
+    def readPlaylist(self, codPlaylist):
+        playlists = self.playlistDAO.read()
+        results = PrettyTable()
+        results.field_names = ['codPlaylist', 'nomePlaylist', 'descPlaylist', 'statusPlaylist', 'imgPlaylist', 'cpfUsuario']
+        if codPlaylist == 0:
+            for iterate in playlists:
+                a, b, c, d, e, f = iterate
+                playlists = [a, b, c, d, e]
+                playlist = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
+                results.add_row(playlist)
+            print(results)
+        else:
+            for iterate in playlists:
+                a, b, c, d, e, f = iterate
+                if a == codPlaylist:
+                    genres = [a, b, c, d, e, f]
+                    playlist = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
+                    results.add_row(playlist)
+            print(results)
+
+    def inputUpdatePlaylist(self, codPlaylist):
+        playlist = self.playlistDAO.search(codPlaylist)
+        print("Dados para serem atualizados: ")
+        playlist.nomePlaylist = input("Nome da Playlist: ")
+        playlist.descPlaylist = input("Descrição da Playlist: ")
+        playlist.statusPlaylist = input("Status da Playlist (pública/privada): ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        playlist.imgPlaylist = bs.convertToBinaryData(imgpath)
+        playlist.cpfUsuario = input("Cpf do Usuário: ")
+        updatePlaylist = PlaylistDAO()
+        result = updatePlaylist.update(playlist, codPlaylist)
+        print(result)
+    
+    def inputDeletePlaylist(self, codPlaylist):
+        result = self.playlistDAO.delete(codPlaylist)
+        print(result)
+    
+#Teste = RunPlaylist()
+#const = int(input("Insira o código da Playlist: "))
+#Teste.inputCreatePlaylist()
+#Teste.readPlaylist(const)
+#Teste.inputUpdatePlaylist(const)
+#Teste.inputDeletePlaylist(const)
 
 
 

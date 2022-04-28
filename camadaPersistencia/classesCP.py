@@ -4,6 +4,7 @@ class Usuario():
         self.cpfUsuario = None
         self.nomeUsuario = None
         self.senhaUsuario = None
+        self.emailUsuario = None
         self.dataNascUsuario = None
         self.tipoUsuario = None
         self.imgUsuario = None
@@ -70,7 +71,7 @@ class Concerto():
         self.valorConcerto = None
         self.imgConcerto = None
 
-class Podcast:
+class Podcast():
     def __init__(self):
         self.codPodcast = ''
         self.nomePodcast = ''

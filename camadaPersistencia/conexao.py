@@ -1,6 +1,8 @@
+import mysql.connector
 import MySQLdb
 
-class MySQL:
+class MySQL():
+
     def __init__(self):
         pass
 

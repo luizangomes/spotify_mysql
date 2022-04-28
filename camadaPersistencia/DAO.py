@@ -1,10 +1,94 @@
-from classesCP import Podcast, Episodio, Genero, Gravadora, Artista, Album
+from classesCP import Podcast, Episodio, Genero, Gravadora, Artista, Album, Usuario, Musica, Playlist
 from conexao import MySQL
+
+
+
+class UsuarioDAO():
+    def __init__(self):
+        pass
+    
+    def create(self, Usuario):
+        try:
+            dados = {'cpfUsuario': Usuario.cpfUsuario,
+                     'nomeUsuario': Usuario.nomeUsuario,
+                     'senhaUsuario': Usuario.senhaUsuario,
+                     'emailUsuario': Usuario.emailUsuario,
+                     'dataNascUsuario': Usuario.dataNascUsuario,
+                     'tipoUsuario': Usuario.tipoUsuario,
+                     'imgUsuario': Usuario.imgUsuario}
+            sql = ("INSERT INTO USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario, imgUsuario) VALUES (%(cpfUsuario)s, %(nomeUsuario)s, %(senhaUsuario)s, %(emailUsuario)s, %(dataNascUsuario)s, %(tipoUsuario)s, %(imgUsuario)s)")
+            self.conn(sql, dados)
+            return dict(message='Usuario created')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def read(self):
+        try:
+            sql = "SELECT * FROM USUARIO"
+            result = self.conn_r(sql)
+            return result
+        except Exception as e:
+            return dict(message=e.message)
+
+    def delete(self, cpfUsuario):
+        try:
+            sql = "DELETE FROM USUARIO WHERE cpfUsuario = %s" % (cpfUsuario)
+            self.conn(sql, dados=None)
+            return dict(message='Usuario deleted')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def update(self, Usuario, cpfUsuario):
+        try:
+            sql = "UPDATE USUARIO SET nomeUsuario = %(nomeUsuario)s, senhaUsuario = %(senhaUsuario)s, emailUsuario = %(emailUsuario)s, dataNascUsuario = %(dataNascUsuario)s, tipoUsuario = %(tipoUsuario)s, imgUsuario = %(imgUsuario)s WHERE cpfUsuario = %(cpfUsuario)s"
+            dados = {'nomeUsuario': Usuario.nomeUsuario,
+                     'senhaUsuario': Usuario.senhaUsuario,
+                     'emailUsuario': Usuario.emailUsuario,
+                     'dataNascUsuario': Usuario.dataNascUsuario,
+                     'tipoUsuario': Usuario.tipoUsuario,
+                     'imgUsuario': Usuario.imgUsuario,
+                     'cpfUsuario': cpfUsuario}
+            self.conn(sql, dados)
+            return dict(message='Usuario updated')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def search(self, cpfUsuario):
+        try:
+            sql = "SELECT nomeUsuario, senhaUsuario, dataNascUsuario, tipoUsuario, imgUsuario FROM USUARIO WHERE cpfUsuario = %s" % (cpfUsuario)
+            result = self.conn_r(sql)
+            nomeUsuario, senhaUsuario, dataNascUsuario, tipoUsuario, imgUsuario = result[0]
+            usu = Usuario()
+            usu.nomeUsuario = nomeUsuario
+            usu.senhaUsuario = senhaUsuario
+            usu.dataNascUsuario = dataNascUsuario
+            usu.tipoUsuario = tipoUsuario
+            usu.imgUsuario = imgUsuario
+            return usu
+        except Exception as e:
+            return dict(message=e.message)
+
+    def conn(self, sql, dados):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql, dados)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def conn_r(self, sql):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        return result
+
+
 
 class GravadoraDAO():
     def __init__(self):
         pass
-    
+
     def create(self, Gravadora):
         try:
             dados = {'nomeGravadora': Gravadora.nomeGravadora,
@@ -215,6 +299,169 @@ class AlbumDAO():
             alb.codArtista = codArtista
             alb.codGravadora = codGravadora
             return alb
+        except Exception as e:
+            return dict(message=e.message)
+
+    def conn(self, sql, dados):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql, dados)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def conn_r(self, sql):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        return result
+
+
+
+class MusicaDAO():
+    def __init__(self):
+        pass
+
+    def create(self, Musica):
+        try:
+            dados = {'nomeMusica': Musica.nomeMusica,
+                     'compositor': Musica.compositor,
+                     'produtor': Musica.produtor,
+                     'durMusica': Musica.durMusica,
+                     'codAlbum': Musica.codAlbum,
+                     'codGenero': Musica.codGenero}
+            sql = ("INSERT INTO MUSICA (nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero)"
+                    "VALUES (%(nomeMusica)s, %(compositor)s, %(produtor)s, %(durMusica)s, %(codAlbum)s, %(codGenero)s)")
+            self.conn(sql, dados)
+            return dict(message='Musica created')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def read(self):
+        try:
+            sql = "SELECT * FROM MUSICA"
+            result = self.conn_r(sql)
+            return result
+        except Exception as e:
+            return dict(message=e.message)
+
+    def delete(self, codMusica):
+        try:
+            sql = "DELETE FROM MUSICA WHERE codMusica = %d" % (codMusica)
+            self.conn(sql, dados=None)
+            return dict(message='Musica deleted')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def update(self, Musica, codMusica):
+        try:
+            sql = "UPDATE MUSICA SET nomeMusica = %(nomeMusica)s, compositor = %(compositor)s, produtor = %(produtor)s, durMusica = %(durMusica)s, codAlbum = %(codAlbum)s, codGenero = %(codGenero)s WHERE codMusica = %(codMusica)s"
+            dados = {'nomeMusica': Musica.nomeMusica,
+                     'compositor': Musica.compositor,
+                     'produtor': Musica.produtor,
+                     'durMusica': Musica.durMusica,
+                     'codAlbum': Musica.codAlbum,
+                     'codGenero': Musica.codGenero,
+                     'codMusica': codMusica}
+            self.conn(sql, dados)
+            return dict(message='Musica updated')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def search(self, codMusica):
+        try:
+            sql = "SELECT nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero FROM MUSICA WHERE codMusica = %s" % (codMusica)
+            result = self.conn_r(sql)
+            nomeMusica, compositor, produtor, durMusica, codAlbum, codGenero = result[0]
+            mus = Musica()
+            mus.nomeMusica = nomeMusica
+            mus.compositor = compositor
+            mus.produtor = produtor
+            mus.durMusica = durMusica
+            mus.codAlbum = codAlbum
+            mus.codGenero = codGenero
+            return mus
+        except Exception as e:
+            return dict(message=e.message)
+
+    def conn(self, sql, dados):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql, dados)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def conn_r(self, sql):
+        conn = MySQL().get_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        return result
+
+
+
+
+class PlaylistDAO():
+    def __init__(self):
+        pass
+
+    def create(self, Playlist):
+        try:
+            dados = {'nomePlaylist': Playlist.nomePlaylist,
+                     'descPlaylist': Playlist.descPlaylist,
+                     'statusPlaylist': Playlist.statusPlaylist,
+                     'imgPlaylist': Playlist.imgPlaylist,
+                     'cpfUsuario': Playlist.cpfUsuario}
+            sql = ("INSERT INTO PLAYLIST (nomePlaylist, descPlaylist, statusPlaylist, imgPlaylist, cpfUsuario) VALUES (%(nomePlaylist)s, %(descPlaylist)s, %(statusPlaylist)s, %(imgPlaylist)s, %(cpfUsuario)s)")
+            self.conn(sql, dados)
+            return dict(message='Playlist created')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def read(self):
+        try:
+            sql = "SELECT * FROM PLAYLIST"
+            result = self.conn_r(sql)
+            return result
+        except Exception as e:
+            return dict(message=e.message)
+
+    def delete(self, codPlaylist):
+        try:
+            sql = "DELETE FROM PLAYLIST WHERE codPlaylist = %d" % (codPlaylist)
+            self.conn(sql, dados=None)
+            return dict(message='Playlist deleted')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def update(self, Playlist, codPlaylist):
+        try:
+            sql = "UPDATE PLAYLIST SET nomePlaylist = %(nomePlaylist)s, descPlaylist = %(descPlaylist)s, statusPlaylist = %(statusPlaylist)s, imgPlaylist = %(imgPlaylist)s, cpfUsuario = %(cpfUsuario)s WHERE codPlaylist = %(codPlaylist)s"
+            dados = {'nomePlaylist': Playlist.nomePlaylist,
+                     'descPlaylist': Playlist.descPlaylist,
+                     'statusPlaylist': Playlist.statusPlaylist,
+                     'imgPlaylist': Playlist.imgPlaylist,
+                     'cpfUsuario': Playlist.cpfUsuario,
+                     'codPlaylist': codPlaylist}
+            self.conn(sql, dados)
+            return dict(message='Playlist updated')
+        except Exception as e:
+            return dict(message=e.message)
+
+    def search(self, codPlaylist):
+        try:
+            sql = "SELECT nomePlaylist, descPlaylist, statusPlaylist, imgPlaylist, cpfUsuario FROM PLAYLIST WHERE codPlaylist = %s" % (codPlaylist)
+            result = self.conn_r(sql)
+            nomePlaylist, descPlaylist, statusPlaylist, imgPlaylist, cpfUsuario = result[0]
+            pla = Playlist()
+            pla.nomePlaylist = nomePlaylist
+            pla.descPlaylist = descPlaylist
+            pla.statusPlaylist = statusPlaylist
+            pla.imgPlaylist = imgPlaylist
+            pla.cpfUsuario = cpfUsuario
+            return pla
         except Exception as e:
             return dict(message=e.message)
 

@@ -1,13 +1,12 @@
 from operator import gt
 import os
-from runDAO import RunPodcast, RunEpisodio, RunGenero
+from runDAO import RunPodcast, RunEpisodio, RunGenero, RunAlbum, RunGravadora, RunArtista, RunMusica, RunPlaylist, RunUsuario
 
 header ="\n |\/|  o   _  ._   _     |\/|  o   _  ._   _    \n |  |  |  (_  |   (_)    |  |  |  (_  |   (_)   \n\n  __                      _     \n (_   ._    _   _|_  o  _|_      \n __)  |_)  (_)   |_  |   |   \/   \n      |                      /    \n"
 
-
 def crudInterface():
-    print("\n\nOlá, este é o Micro Micro Spotify, aqui podemos consultar, inserir, deletar e atualizar dados do nosso banco de dados.\nNo momento você gostaria de utilizar qual classe do banco de Dados? Escolha entre as disponíveis abaixo:\n(1)   Álbum\n(2)   Artista\n(3)   Concerto\n(4)   Episódio (OK)\n(5)   Gênero (OK)\n(6)   Gravadora\n(7)   Música\n(8)   Playlist\n(9)   Podcast (OK)\n(10)   Usuário\n(0) SAIR DO PROGRAMA\n(digite somente o número da classe escolhida)")
-    value = input("ESCREVA O NÚMERO DA CLASSE ESCOLHIDA:  ")
+    print("\n\nOlá, este é o Micro Micro Spotify, aqui podemos consultar, inserir, deletar e atualizar dados do nosso banco de dados.\nNo momento você gostaria de utilizar qual classe do banco de Dados? Escolha entre as disponíveis abaixo:\n\n(1)   Álbum\n(2)   Artista\n(3)   Concerto\n(4)   Episódio (OK)\n(5)   Gênero (OK)\n(6)   Gravadora\n(7)   Música\n(8)   Playlist\n(9)   Podcast (OK)\n(10)  Usuário\n(0)   SAIR DO PROGRAMA\n(digite somente o número da classe escolhida)")
+    value = input("\nESCREVA O NÚMERO DA CLASSE ESCOLHIDA: ")
     return value
 
 print(header)
@@ -17,6 +16,39 @@ interromper = 0
 while interromper == 0:
     classToCRUD = int(crudInterface())
     os.system('cls||clear')
+
+    if classToCRUD == 1:
+        print("ÁLBUM\n")
+        albumCRUD = RunAlbum()
+        al = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if al  == 1:
+            albumCRUD.inputCreateAlbum()
+        if al  == 2:
+            escolha = int(input("Se gostaria de ver a lista geral de álbuns insira 0, se for um álbum específico digite seu código\nINPUT = "))
+            albumCRUD.readAlbum(escolha)
+        if al  == 3:
+            escolha = int(input("Escolha um álbum para atualizar, digite o seu código\nINPUT = "))
+            albumCRUD.inputUpdateAlbum(escolha)
+        if al  == 4:
+            escolha = int(input("Escolha um álbum para deletar, digite o seu código\nINPUT = "))
+            albumCRUD.inputDeleteAlbum(escolha)
+
+    if classToCRUD == 2:
+        print("ARTISTA\n")
+        artistaCRUD = RunArtista()
+        ar = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if ar == 1:
+            artistaCRUD.inputCreateArtista()
+        if ar  == 2:
+            escolha = int(input("Se gostaria de ver a lista geral de artistas insira 0, se for um artista específico digite seu código\nINPUT = "))
+            artistaCRUD.readArtista(escolha)
+        if ar  == 3:
+            escolha = int(input("Escolha um artista para atualizar, digite o seu código\nINPUT = "))
+            artistaCRUD.inputUpdateArtista(escolha)
+        if ar  == 4:
+            escolha = int(input("Escolha um álbum para deletar, digite o seu código\nINPUT = "))
+            artistaCRUD.inputDeleteArtista(escolha)
+
     if classToCRUD == 4:
         print("EPISÓDIO\n")
         episodioCRUD = RunEpisodio()
@@ -49,6 +81,54 @@ while interromper == 0:
             escolha = int(input("Escolha um gênero para deletar, digite o seu código\nINPUT = "))
             generoCRUD.inputDeleteGenero(escolha)
 
+    if classToCRUD == 6:
+        print("GRAVADORA\n")
+        gravadoraCRUD = RunGravadora()
+        gr = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if gr  == 1:
+            gravadoraCRUD.inputCreateGravadora()
+        if gr  == 2:
+            escolha = int(input("Se gostaria de ver a lista geral de gravadoras insira 0, se for uma gravadora específica digite seu código\nINPUT = "))
+            gravadoraCRUD.readGravadora(escolha)
+        if gr  == 3:
+            escolha = int(input("Escolha uma gravadora para atualizar, digite o seu código\nINPUT = "))
+            gravadoraCRUD.inputUpdateGravadora(escolha)
+        if gr  == 4:
+            escolha = int(input("Escolha uma gravadora para deletar, digite o seu código\nINPUT = "))
+            gravadoraCRUD.inputDeleteGravadora(escolha)
+
+    if classToCRUD == 7:
+        print("MÚSICA\n")
+        musicaCRUD = RunMusica()
+        mu = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if mu  == 1:
+            musicaCRUD.inputCreateMusica()
+        if mu  == 2:
+            escolha = int(input("Se gostaria de ver a lista geral de músicas insira 0, se for uma música específica digite seu código\nINPUT = "))
+            musicaCRUD.readMusica(escolha)
+        if mu  == 3:
+            escolha = int(input("Escolha uma música para atualizar, digite o seu código\nINPUT = "))
+            musicaCRUD.inputUpdateMusica(escolha)
+        if mu  == 4:
+            escolha = int(input("Escolha uma música para deletar, digite o seu código\nINPUT = "))
+            musicaCRUD.inputDeleteMusica(escolha)
+
+    if classToCRUD == 8:
+        print("PLAYLIST\n")
+        playlistCRUD = RunPlaylist()
+        pl = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if pl  == 1:
+            playlistCRUD.inputCreatePlaylist()
+        if pl  == 2:
+            escolha = int(input("Se gostaria de ver a lista geral de playlists insira 0, se for uma playlist específica digite seu código\nINPUT = "))
+            playlistCRUD.readPlaylist(escolha)
+        if pl  == 3:
+            escolha = int(input("Escolha uma playlist para atualizar, digite o seu código\nINPUT = "))
+            playlistCRUD.inputUpdatePlaylist(escolha)
+        if pl  == 4:
+            escolha = int(input("Escolha uma playlist para deletar, digite o seu código\nINPUT = "))
+            playlistCRUD.inputDeletePlaylist(escolha)
+
     if classToCRUD == 9:
         print("PODCAST\n")
         podcastCRUD = RunPodcast()
@@ -64,6 +144,26 @@ while interromper == 0:
         if pod == 4:
             escolha = int(input("Escolha um podcast para deletar, digite o seu código\nINPUT = "))
             podcastCRUD.inputDeletePodcast(escolha)
+
+    if classToCRUD == 10:
+        print("USUÁRIO\n")
+        usuarioCRUD = RunUsuario()
+        us = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if us == 1:
+            usuarioCRUD.inputCreateUsuario()
+        if us == 2:
+            escolha = input("Se gostaria de ver a lista geral de usuários insira 0, se for um usuário específico insira 1: ")
+            if escolha == '0':
+                usuarioCRUD.readUsuario(int(escolha))
+            elif escolha == '1':
+                cpf = input("Insira o CPF do usuário: ")
+                usuarioCRUD.readUsuario(cpf)
+        if us == 3:
+            escolha = int(input("Escolha um usuario para atualizar, digite o seu código\nINPUT = "))
+            usuarioCRUD.inputUpdateUsuario(escolha)
+        if us == 4:
+            escolha = int(input("Escolha um usuario para deletar, digite o seu código\nINPUT = "))
+            usuarioCRUD.inputDeleteUsuario(escolha)
 
     interromper = int(input("Você quer fechar o programa? (Digite: 1 - Sim ou 0 - Não)  "))
     os.system('cls||clear')
