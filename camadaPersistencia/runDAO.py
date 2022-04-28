@@ -1,69 +1,74 @@
-from classesCP import Podcast, Episodio, Genero, Gravadora, Artista, Album
-from DAO import PodcastDAO, EpisodioDAO, GeneroDAO, GravadoraDAO, ArtistaDAO, AlbumDAO
+from classesCP import Podcast, Episodio, Genero,  Artista, Album, Usuario
+from DAO import UsuarioDAO, PodcastDAO, EpisodioDAO, GeneroDAO, ArtistaDAO, AlbumDAO
 from prettytable import PrettyTable
 from blobMaker import BlobSolver
 
-class RunGravadora:
-    def __init__(self):
-        self.gravadoraDAO = GravadoraDAO()
+class RunUsuario:
+    def _init_(self):
+        self.usuarioDAO = UsuarioDAO()
 
-    def inputCreateGravadora(self):
-        addGravadora = Gravadora()
-        print("Insira os dados da nova Gravadora: ")
-        addGravadora.nomeGravadora = input("Nome da Gravadora: ")
-        addGravadora.bioGravadora = input("Biografia da Gravadora: ")
-        addGravadora.dataGravadora = input("Data de criação da Gravadora: ")
-        addGravadora.statusGravadora = input("A Gravadora está ativa? ")
-        addGravadora.paisGravadora = input("País de Origem: ")
-        newGravadora = GravadoraDAO()
-        result = newGravadora.create(addGravadora)
+    def inputCreateUsuario(self):
+        addUsuario = Usuario()
+        print("Insira os dados do novo Usuário: ")
+        addUsuario.cpfUsuario = input("Cpf do Usuário: ")
+        addUsuario.nomeUsuario = input("Nome do Usuário: ")
+        addUsuario.emailUsuario = input("Email do Usuário: ")
+        addUsuario.senhaUsuario = input("Digite a senha: ")
+        addUsuario.dataNascUsuario = input("Data de nascimento: ")
+        addUsuario.tipoUsuario = input("Tipo de Usuário (Premium/Normal): ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        addUsuario.imgUsuario = bs.convertToBinaryData(imgpath)
+        newUsuario = UsuarioDAO()
+        result = newUsuario.create(addUsuario)
         print(result)
 
-    def readGravadora(self, codGravadora):
-        gravadoras = self.gravadoraDAO.read()
+    def readUsuario(self, cpfUsuario):
+        usuarios = self.usuarioDAO.read()
         results = PrettyTable()
-        results.field_names = ['codGravadora', 'nomeGravadora', 'bioGravadora', 'dataGravadora', 'statusGravadora', 'paisGravadora']
-        if codGravadora == 0:
-            for iterate in gravadoras:
-                a, b, c, d, e, f = iterate
-                gravadoras = {a, b, c, d, e, f}
-                gravadora = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
-                results.add_row(gravadora)   
+        results.field_names = ['cpfUsuario', 'nomeUsuario', 'emailUsuario', 'senhaUsuario', 'dataNascUsuario', 'tipoUsuario', 'imgUsuario']
+        if cpfUsuario == 0:
+            for iterate in usuarios:
+                a, b, c, d, e, f, g = iterate
+                usuarios = {a, b, c, d, e, f, g}
+                usuario = ['%s'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                results.add_row(usuario)
             print(results)
         else:
-            for iterate in gravadoras:
-                a, b, c, d, e, f = iterate
-                if a == codGravadora:
-                    gravadoras = {a, b, c, d, e, f}
-                    gravadora = ['%d'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f)]
-                    results.add_row(gravadora)
+            for iterate in usuarios:
+                a, b, c, d, e, f, g = iterate
+                if a == cpfUsuario:
+                    usuarios = {a, b, c, d, e, f, g}
+                    usuario = ['%s'%(a), '%s'%(b), '%s'%(c), '%s'%(d), '%s'%(e), '%s'%(f), '%s'%(g)]
+                    results.add_row(usuario)
             print(results)
 
-    def inputDeleteGravadora(self, codGravadora):
-        result = self.gravadoraDAO.delete(codGravadora)
+    def inputDeleteUsuario(self, cpfUsuario):
+        result = self.usuarioDAO.delete(cpfUsuario)
         print(result)
 
-    def inputUpdateGravadora(self, codGravadora):
-        gravadora = self.gravadoraDAO.search(codGravadora)
+    def inputUpdateUsuario(self, cpfUsuario):
+        usuario = self.usuarioDAO.search(cpfUsuario)
         print("Dados para serem atualizados: ")
-        gravadora.nomeGravadora = input("Nome da Gravadora: ")
-        gravadora.bioGravadora = input("Biografia da Gravadora: ")
-        gravadora.dataGravadora = input("Data de criação da Gravadora (YYYY-MM-DD): ")
-        gravadora.statusGravadora = input("Status da Gravadora (ativa/não ativa): ")
-        gravadora.paisGravadora = input("País de Origem: ")
-        updateGravadora = GravadoraDAO()
-        result = updateGravadora.update(gravadora, codGravadora)
+        usuario.nomeUsuario = input("Nome do Usuário: ")
+        usuario.senhaUsuario = input("Digite a senha: ")
+        usuario.dataNascUsuario = input("Data de nascimento: ")
+        usuario.tipoUsuario = input("Tipo de Usuário (Premium/Normal): ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        usuario.imgUsuario = bs.convertToBinaryData(imgpath)
+        updateUsuario = UsuarioDAO()
+        result = updateUsuario.update(usuario, cpfUsuario)
         print(result)
 
-
-#Teste = RunGravadora()
-#const = int(input("Insira o código da Gravadora: "))
-#Teste.inputCreateGravadora()
-#Teste.readGravadora(const)
-#Teste.inputUpdateGravadora(const)
-#Teste.inputDeleteGravadora(const)
-
-
+#Teste = RunUsuario()
+#const = input("Insira o código do Usuário: ")
+#Teste.inputCreateUsuario()
+#Teste.readUsuario(const)
+#Teste.inputUpdateUsuario(const)
+#Teste.inputDeleteUsuario(const)
 
 class RunArtista:
     def __init__(self):

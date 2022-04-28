@@ -1,6 +1,6 @@
 from operator import gt
 import os
-from runDAO import RunPodcast, RunEpisodio, RunGenero
+from runDAO import RunPodcast, RunEpisodio, RunGenero, RunArtista, RunAlbum, RunUsuario
 
 header ="\n |\/|  o   _  ._   _     |\/|  o   _  ._   _    \n |  |  |  (_  |   (_)    |  |  |  (_  |   (_)   \n\n  __                      _     \n (_   ._    _   _|_  o  _|_      \n __)  |_)  (_)   |_  |   |   \/   \n      |                      /    \n"
 
@@ -17,6 +17,21 @@ interromper = 0
 while interromper == 0:
     classToCRUD = int(crudInterface())
     os.system('cls||clear')
+    if classToCRUD == 1:
+        print("ÁLBUM\n")
+        albumCRUD = RunAlbum()
+        alb = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if alb == 1:
+            albumCRUD.inputCreateAlbum()
+        if alb == 2:
+            escolha = int(input("Se gostaria de ver a lista geral de Gêneros insira 0, se for um gênero específico digite seu código\nINPUT = "))
+            albumCRUD.readAlbum(escolha)
+        if alb == 3:
+            escolha = int(input("Escolha um gênero para atualizar, digite o seu código\nINPUT = "))
+            albumCRUD.inputUpdateAlbum(escolha)
+        if alb == 4:
+            escolha = int(input("Escolha um gênero para deletar, digite o seu código\nINPUT = "))
+            albumCRUD.inputDeleteAlbum(escolha)
     if classToCRUD == 4:
         print("EPISÓDIO\n")
         episodioCRUD = RunEpisodio()
@@ -64,6 +79,26 @@ while interromper == 0:
         if pod == 4:
             escolha = int(input("Escolha um podcast para deletar, digite o seu código\nINPUT = "))
             podcastCRUD.inputDeletePodcast(escolha)
+    
+    if classToCRUD == 10:
+        print("USUÁRIO\n")
+        usuarioCRUD = RunUsuario()
+        us = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        if us == 1:
+            usuarioCRUD.inputCreateUsuario()
+        if us == 2:
+            escolha = input("Se gostaria de ver a lista geral de usuários insira 0, se for um usuário específico insira 1: ")
+            if escolha == '0':
+                usuarioCRUD.readUsuario(int(escolha))
+            elif escolha == '1':
+                cpf = input("Insira o CPF do usuário: ")
+                usuarioCRUD.readUsuario(cpf)
+        if us == 3:
+            escolha = int(input("Escolha um usuario para atualizar, digite o seu código\nINPUT = "))
+            usuarioCRUD.inputUpdateUsuario(escolha)
+        if us == 4:
+            escolha = int(input("Escolha um usuario para deletar, digite o seu código\nINPUT = "))
+            usuarioCRUD.inputDeleteUsuario(escolha)
 
     interromper = int(input("Você quer fechar o programa? (Digite: 1 - Sim ou 0 - Não)  "))
     os.system('cls||clear')

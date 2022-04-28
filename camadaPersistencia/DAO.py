@@ -1,66 +1,68 @@
-from classesCP import Podcast, Episodio, Genero, Gravadora, Artista, Album
+from classesCP import Podcast, Episodio, Genero, Artista, Album, Usuario
 from conexao import MySQL
 
-class GravadoraDAO():
+class UsuarioDAO():
     def __init__(self):
         pass
     
-    def create(self, Gravadora):
+    def create(self, Usuario):
         try:
-            dados = {'nomeGravadora': Gravadora.nomeGravadora,
-                     'bioGravadora': Gravadora.bioGravadora,
-                     'dataGravadora': Gravadora.dataGravadora,
-                     'statusGravadora': Gravadora.statusGravadora,
-                     'paisGravadora': Gravadora.paisGravadora}
-            sql = ("INSERT INTO GRAVADORA (nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora)"
-                    "VALUES (%(nomeGravadora)s, %(bioGravadora)s, %(dataGravadora)s, %(statusGravadora)s, %(paisGravadora)s)")
+            dados = {'cpfUsuario': Usuario.cpfUsuario,
+                     'nomeUsuario': Usuario.nomeUsuario,
+                     'senhaUsuario': Usuario.senhaUsuario,
+                     'emailUsuario': Usuario.emailUsuario,
+                     'dataNascUsuario': Usuario.dataNascUsuario,
+                     'tipoUsuario': Usuario.tipoUsuario,
+                     'imgUsuario': Usuario.imgUsuario}
+            sql = ("INSERT INTO USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario, imgUsuario) VALUES (%(cpfUsuario)s, %(nomeUsuario)s, %(senhaUsuario)s, %(emailUsuario)s, %(dataNascUsuario)s, %(tipoUsuario)s, %(imgUsuario)s)")
             self.conn(sql, dados)
-            return dict(message='Gravadora created')
+            return dict(message='Usuario created')
         except Exception as e:
             return dict(message=e.message)
 
     def read(self):
         try:
-            sql = "SELECT * FROM GRAVADORA"
+            sql = "SELECT * FROM USUARIO"
             result = self.conn_r(sql)
             return result
         except Exception as e:
             return dict(message=e.message)
 
-    def delete(self, codGravadora):
+    def delete(self, cpfUsuario):
         try:
-            sql = "DELETE FROM GRAVADORA WHERE codGravadora = %d" % (codGravadora)
+            sql = "DELETE FROM USUARIO WHERE cpfUsuario = %s" % (cpfUsuario)
             self.conn(sql, dados=None)
-            return dict(message='Gravadora deleted')
+            return dict(message='Usuario deleted')
         except Exception as e:
             return dict(message=e.message)
 
-    def update(self, Gravadora, codGravadora):
+    def update(self, Usuario, cpfUsuario):
         try:
-            sql = "UPDATE GRAVADORA SET nomeGravadora = %(nomeGravadora)s, bioGravadora = %(bioGravadora)s, dataGravadora = %(dataGravadora)s, statusGravadora = %(statusGravadora)s, paisGravadora = %(paisGravadora)s WHERE codGravadora = %(codGravadora)s"
-            dados = {'nomeGravadora': Gravadora.nomeGravadora,
-                     'bioGravadora': Gravadora.bioGravadora,
-                     'dataGravadora': Gravadora.dataGravadora,
-                     'statusGravadora': Gravadora.statusGravadora,
-                     'paisGravadora': Gravadora.paisGravadora,
-                     'codGravadora': codGravadora}
+            sql = "UPDATE USUARIO SET nomeUsuario = %(nomeUsuario)s, senhaUsuario = %(senhaUsuario)s, emailUsuario = %(emailUsuario)s, dataNascUsuario = %(dataNascUsuario)s, tipoUsuario = %(tipoUsuario)s, imgUsuario = %(imgUsuario)s WHERE cpfUsuario = %(cpfUsuario)s"
+            dados = {'nomeUsuario': Usuario.nomeUsuario,
+                     'senhaUsuario': Usuario.senhaUsuario,
+                     'emailUsuario': Usuario.emailUsuario,
+                     'dataNascUsuario': Usuario.dataNascUsuario,
+                     'tipoUsuario': Usuario.tipoUsuario,
+                     'imgUsuario': Usuario.imgUsuario,
+                     'cpfUsuario': cpfUsuario}
             self.conn(sql, dados)
-            return dict(message='Gravadora updated')
+            return dict(message='Usuario updated')
         except Exception as e:
             return dict(message=e.message)
 
-    def search(self, codGravadora):
+    def search(self, cpfUsuario):
         try:
-            sql = "SELECT nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora FROM GRAVADORA WHERE codGravadora = %s" % (codGravadora)
+            sql = "SELECT nomeUsuario, senhaUsuario, dataNascUsuario, tipoUsuario, imgUsuario FROM USUARIO WHERE cpfUsuario = %s" % (cpfUsuario)
             result = self.conn_r(sql)
-            nomeGravadora, bioGravadora, dataGravadora, statusGravadora, paisGravadora = result[0]
-            gra = Gravadora()
-            gra.nomeGravadora = nomeGravadora
-            gra.bioGravadora = bioGravadora
-            gra.dataGravadora = dataGravadora
-            gra.statusGravadora = statusGravadora
-            gra.paisGravadora = paisGravadora
-            return gra
+            nomeUsuario, senhaUsuario, dataNascUsuario, tipoUsuario, imgUsuario = result[0]
+            usu = Usuario()
+            usu.nomeUsuario = nomeUsuario
+            usu.senhaUsuario = senhaUsuario
+            usu.dataNascUsuario = dataNascUsuario
+            usu.tipoUsuario = tipoUsuario
+            usu.imgUsuario = imgUsuario
+            return usu
         except Exception as e:
             return dict(message=e.message)
 
@@ -78,8 +80,6 @@ class GravadoraDAO():
         cursor.execute(sql)
         result = cursor.fetchall()
         return result
-
-
 
 class ArtistaDAO():
     def __init__(self):
