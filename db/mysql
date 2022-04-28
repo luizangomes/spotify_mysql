@@ -12,8 +12,12 @@ DROP TABLE IF EXISTS USUARIO;
 DROP TABLE IF EXISTS PLAYLIST;
 DROP TABLE IF EXISTS PODCAST;
 DROP TABLE IF EXISTS EPISODIO;
+DROP TABLE IF EXISTS CONCERTO_ARTISTA;
+DROP TABLE IF EXISTS USUARIO_ARTISTA;
+DROP TABLE IF EXISTS USUARIO_PODCAST;
+DROP TABLE IF EXISTS MUSICA_PLAYLIST;
+DROP TABLE IF EXISTS EPISODIO_PLAYLIST;
 SET FOREIGN_KEY_CHECKS = 1;
-
 
 CREATE TABLE GRAVADORA (
 	codGravadora INT AUTO_INCREMENT,
@@ -82,7 +86,7 @@ CREATE TABLE MUSICA (
 );
 
 CREATE TABLE USUARIO (
-	cpfUsuario DECIMAL(11) NOT NULL,
+	cpfUsuario VARCHAR(11) NOT NULL,
     nomeUsuario VARCHAR(100) NOT NULL,
     senhaUsuario VARCHAR(45) NOT NULL,
     emailUsuario VARCHAR(100) NOT NULL,
@@ -98,7 +102,7 @@ CREATE TABLE PLAYLIST (
     descPlaylist VARCHAR(200),
     statusPlaylist VARCHAR(10) NOT NULL,
     imgPlaylist BLOB,
-    cpfUsuario DECIMAL(11),
+    cpfUsuario VARCHAR(11),
     CONSTRAINT PK_codPlaylist PRIMARY KEY (codPlaylist),
     CONSTRAINT FK_cpfUsuario_playlist_usuario FOREIGN KEY (cpfUsuario) REFERENCES USUARIO(cpfUsuario)
 );
@@ -124,8 +128,7 @@ CREATE TABLE EPISODIO (
     CONSTRAINT FK_codPodcast_episodio_podcast FOREIGN KEY (codPodcast) REFERENCES PODCAST(codPodcast) ON DELETE CASCADE
 );
 
-/*Tabela de relacionamentos N:N */
-
+/*Tabelas de relacionamentos N:N */
 /*CONCERTO - ARTISTA */
 CREATE TABLE CONCERTO_ARTISTA (
     dataHoraConcerto DATETIME REFERENCES CONCERTO(dataHoraConcerto),
@@ -136,14 +139,14 @@ CREATE TABLE CONCERTO_ARTISTA (
 
 /*USUARIO - ARTISTA */
 CREATE TABLE USUARIO_ARTISTA (
-	cpfUsuario DECIMAL(11) REFERENCES USUARIO(cpfUsuario),
+	cpfUsuario VARCHAR(11) REFERENCES USUARIO(cpfUsuario),
     codArtista INT REFERENCES ARTISTA(codArtista),
     PRIMARY KEY (cpfUsuario, codArtista)
 );
 
 /* USUARIO - PODCAST */
 CREATE TABLE USUARIO_PODCAST (
-	cpfUsuario DECIMAL(11) REFERENCES USUARIO(cpfUsuario),
+	cpfUsuario VARCHAR(11) REFERENCES USUARIO(cpfUsuario),
     codPodcast INT REFERENCES PODCAST(codPodcast),
     PRIMARY KEY (cpfUsuario, codPodcast)
 );
@@ -286,6 +289,11 @@ insert into USUARIO_ARTISTA (cpfUsuario, codArtista) values (12345678901, 3);
 insert into USUARIO_ARTISTA (cpfUsuario, codArtista) values (12345678901, 5);
 insert into USUARIO_PODCAST (cpfUsuario, codPodcast) values (12345678901, 1);
 insert into USUARIO_PODCAST (cpfUsuario, codPodcast) values (12345678901, 4);
+/*CONTINUA INSERINDO DADOS DO USUÁRIO 1*/
+insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (3, "Episódios Favoritos", "Lista de Episódios Favoritados", "privada", 12345678901);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (3, 3);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (5, 3);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (1, 3);
 
 USE SPOTIFY_FINAL;
 /*5 tabelas mostrando as playlists - Produto Cartesiano (5 TABELAS)*/
@@ -316,12 +324,6 @@ INNER JOIN ALBUM B ON (A.codAlbum = B.codAlbum)
 INNER JOIN ARTISTA C ON (B.codArtista = C.codArtista)
 WHERE B.codAlbum = 1
 GROUP BY A.codMusica;
-
-/*CONTINUA INSERINDO DADOS DO USUÁRIO 1*/
-insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (3, "Episódios Favoritos", "Lista de Episódios Favoritados", "privada", 12345678901);
-insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (3, 3);
-insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (5, 3);
-insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (1, 3);
 
 /*Episódios do PlaylistxEpisodioPlaylistxEpisodio- Produto (3 Tabelas)*/
 SELECT A.cpfUsuario, A.nomePlaylist, A.descPlaylist, A.statusPlaylist, 
