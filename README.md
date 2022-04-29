@@ -1,5 +1,5 @@
-# spotify_mysql
-# MICROMICRO SPOTIFY
+# Spotify em MySQL
+# MICRO MICRO SPOTIFY
 
 Para rodar o Micro Micro Spotify precisaremos rodar as seguintes instruções depois de baixar este repositório:
 ````
