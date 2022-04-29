@@ -213,7 +213,10 @@ class RunAlbum:
         addAlbum.nomeAlbum = input("Nome do Álbum: ")
         addAlbum.tipoAlbum = input("Tipo do Álbum: ")
         addAlbum.dataAlbum = input("Data de lançamento do Álbum (YYYY-MM-DD): ")
-        addAlbum.imgAlbum = input("Importar imagem: ")
+        print("Importar imagem: ")
+        bs = BlobSolver
+        imgpath = bs.insertBLOB()
+        addAlbum.imgAlbum = bs.convertToBinaryData(imgpath)
         addAlbum.codArtista = input("Código do Artista: ")
         addAlbum.codGravadora = input("Código da Gravadora: ")
         newAlbum = AlbumDAO()
