@@ -551,7 +551,7 @@ class RunGenero:
     def readGenero(self, codGenero):
         genres = self.generoDAO.read()
         results = PrettyTable()
-        results.field_names = ['codGenero','imgGenero', 'descGenero', 'subGenero', 'nomeGenero']
+        results.field_names = ['codGenero','imgGenero', 'subGenero', 'descGenero', 'nomeGenero']
         if codGenero == 0:
             for iterate in genres:
                 a, b, c, d, e = iterate
