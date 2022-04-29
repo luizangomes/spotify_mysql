@@ -23,4 +23,4 @@ mysql -h localhost -P 3306 -u root -p
 MySQL> use SPOTIFY_FINAL;
 MySQL> EXIT
 ````
-##Desenvolvido por: Camila Frealdo e Luiza N Gomes
+## Desenvolvido por: Camila Frealdo e Luiza N Gomes
