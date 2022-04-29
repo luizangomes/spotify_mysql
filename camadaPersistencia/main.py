@@ -9,7 +9,8 @@ def crudInterface():
     print("\n\nOlá, este é o Micro Micro Spotify, aqui podemos consultar, inserir, deletar e atualizar dados do nosso banco de dados.\nNo momento você gostaria de utilizar qual classe do banco de Dados? Escolha entre as disponíveis abaixo:\n\n(1)   Álbum(OK)\n(2)   Artista(OK)\n(3)   Concerto\n(4)   Episódio (OK)\n(5)   Gênero (OK)\n(6)   Gravadora\n(7)   Música(OK)\n(8)   Playlist\n(9)   Podcast (OK)\n(10)  Usuário(OK)\n(0)   SAIR DO PROGRAMA\n(digite somente o número da classe escolhida)")
     value = input("\nESCREVA O NÚMERO DA CLASSE ESCOLHIDA: ")
     return value
-
+    
+os.system('cls||clear')
 print(header)
 
 interromper = 0
