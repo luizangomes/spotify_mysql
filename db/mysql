@@ -287,6 +287,18 @@ insert into USUARIO_ARTISTA (cpfUsuario, codArtista) values (12345678901, 5);
 insert into USUARIO_PODCAST (cpfUsuario, codPodcast) values (12345678901, 1);
 insert into USUARIO_PODCAST (cpfUsuario, codPodcast) values (12345678901, 4);
 
+/*CONTINUA INSERINDO DADOS DO USUÁRIO 1*/
+insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (3, "Episódios Favoritos", "Lista de Episódios Favoritados", "privada", 12345678901);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (3, 3);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (5, 3);
+insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (1, 3);
+
+/*NOVOS DADOS*/
+insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678968, "Usuário Normal", "senha", "usuario@mail.com", "1980-05-01","Normal");
+insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678978, "Usuário Fantasmin", "senha", "usuariofantasmin@mail.com", "2010-10-01", "Normal");
+insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678988, "Usuário Fantasma", "senha", "usuariofantasma@mail.com", "2000-01-01", "Premium");
+insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678989, "Usuário Fantasminha", "senha", "usuariofantasminha@mail.com", "1990-01-01", "Premium");
+
 USE SPOTIFY_FINAL;
 /*5 tabelas mostrando as playlists - Produto Cartesiano (5 TABELAS)*/
 SELECT A.codPlaylist, A.nomePlaylist, C.nomeMusica, C.durMusica, D.nomeAlbum, E.nomeArtista FROM PLAYLIST A
@@ -317,11 +329,7 @@ INNER JOIN ARTISTA C ON (B.codArtista = C.codArtista)
 WHERE B.codAlbum = 1
 GROUP BY A.codMusica;
 
-/*CONTINUA INSERINDO DADOS DO USUÁRIO 1*/
-insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (3, "Episódios Favoritos", "Lista de Episódios Favoritados", "privada", 12345678901);
-insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (3, 3);
-insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (5, 3);
-insert into EPISODIO_PLAYLIST(codEpisodio, codPlaylist) values (1, 3);
+
 
 /*Episódios do PlaylistxEpisodioPlaylistxEpisodio- Produto (3 Tabelas)*/
 SELECT A.cpfUsuario, A.nomePlaylist, A.descPlaylist, A.statusPlaylist, 
@@ -335,3 +343,33 @@ SELECT A.nomeGravadora, B.nomeArtista, C.nomeAlbum, C.dataAlbum FROM GRAVADORA A
 INNER JOIN ALBUM C ON (A.codGravadora = C.codGravadora)
 INNER JOIN artista B ON (B.codArtista = C.codArtista)
 ORDER BY dataAlbum DESC;
+
+CREATE VIEW Genero_Musica_Album_Artista
+AS
+	SELECT nomeGenero, nomeMusica, durMusica, nomeAlbum, nomeArtista FROM MUSICA
+	LEFT JOIN GENERO ON (MUSICA.codGenero= GENERO.codGenero)
+	LEFT JOIN ALBUM ON (ALBUM.codAlbum = MUSICA.codAlbum)
+	LEFT JOIN ARTISTA ON (ARTISTA.codArtista = ALBUM.codArtista)
+	ORDER BY durMusica;
+SELECT * FROM Genero_Musica_Album_Artista;
+
+/Relação Usuario, Playlist, MUsica, Genero/
+CREATE VIEW Usuario_Playlist_Musica_Genero
+AS
+	SELECT nomeUsuario, nomePlaylist, nomeMusica, nomeGenero FROM MUSICA_PLAYLIST
+	INNER JOIN MUSICA ON (MUSICA.codMusica = MUSICA_PLAYLIST.codMusica)
+	INNER JOIN PLAYLIST ON (PLAYLIST.codPlaylist = MUSICA_PLAYLIST.codPlaylist)
+	INNER JOIN USUARIO ON (PLAYLIST.cpfUsuario = USUARIO.cpfUsuario)
+	INNER JOIN GENERO ON (MUSICA.codGenero = GENERO.codGenero)
+	ORDER BY nomeUsuario, nomePlaylist, nomeMusica;
+SELECT * FROM Usuario_Playlist_Musica_Genero;
+
+DELIMITER //
+CREATE PROCEDURE sp_listaDeMusicasEmAlbum(thisCodAlbum INT)
+BEGIN
+	SELECT (MUSICA.codMusica) AS "#", MUSICA.nomeMusica, ALBUM.nomeAlbum, ARTISTA.nomeArtista, MUSICA.durMusica FROM MUSICA
+	inner JOIN ALBUM ON (ALBUM.codAlbum = MUSICA.codAlbum)  
+	inner JOIN ARTISTA ON (ALBUM.codArtista = ARTISTA.codArtista)  
+	WHERE ALBUM.codAlbum = 2
+	GROUP BY MUSICA.codMusica;
+END//
