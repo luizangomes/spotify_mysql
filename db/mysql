@@ -344,6 +344,7 @@ INNER JOIN ALBUM C ON (A.codGravadora = C.codGravadora)
 INNER JOIN artista B ON (B.codArtista = C.codArtista)
 ORDER BY dataAlbum DESC;
 
+/*Relação Gênero, música, Álbum e Artista*/
 CREATE VIEW Genero_Musica_Album_Artista
 AS
 	SELECT nomeGenero, nomeMusica, durMusica, nomeAlbum, nomeArtista FROM MUSICA
@@ -353,7 +354,7 @@ AS
 	ORDER BY durMusica;
 SELECT * FROM Genero_Musica_Album_Artista;
 
-/Relação Usuario, Playlist, MUsica, Genero/
+/*Relação Usuario, Playlist, MUsica, Genero*/
 CREATE VIEW Usuario_Playlist_Musica_Genero
 AS
 	SELECT nomeUsuario, nomePlaylist, nomeMusica, nomeGenero FROM MUSICA_PLAYLIST
@@ -364,6 +365,7 @@ AS
 	ORDER BY nomeUsuario, nomePlaylist, nomeMusica;
 SELECT * FROM Usuario_Playlist_Musica_Genero;
 
+/*Procedure utilizada em Álbuns*/
 DELIMITER //
 CREATE PROCEDURE sp_listaDeMusicasEmAlbum(thisCodAlbum INT)
 BEGIN
