@@ -1,5 +1,5 @@
 # spotify_mysql
-# MICRO SPOTIFY
+# MICROMICRO SPOTIFY
 
 Para rodar o Micro Micro Spotify precisaremos rodar as seguintes instruções depois de baixar este repositório:
 ````
@@ -23,3 +23,4 @@ mysql -h localhost -P 3306 -u root -p
 MySQL> use SPOTIFY_FINAL;
 MySQL> EXIT
 ````
+##Desenvolvido por: Camila Frealdo e Luiza N Gomes
