@@ -1,11 +1,12 @@
 from operator import gt
 import os
+from procedure import Procedures
 from runDAO import RunPodcast, RunEpisodio, RunGenero, RunAlbum, RunGravadora, RunArtista, RunMusica, RunPlaylist, RunUsuario
 
 header ="\n |\/|  o   _  ._   _     |\/|  o   _  ._   _    \n |  |  |  (_  |   (_)    |  |  |  (_  |   (_)   \n\n  __                      _     \n (_   ._    _   _|_  o  _|_      \n __)  |_)  (_)   |_  |   |   \/   \n      |                      /    \n"
 
 def crudInterface():
-    print("\n\nOlá, este é o Micro Micro Spotify, aqui podemos consultar, inserir, deletar e atualizar dados do nosso banco de dados.\nNo momento você gostaria de utilizar qual classe do banco de Dados? Escolha entre as disponíveis abaixo:\n\n(1)   Álbum\n(2)   Artista\n(3)   Concerto\n(4)   Episódio (OK)\n(5)   Gênero (OK)\n(6)   Gravadora\n(7)   Música\n(8)   Playlist\n(9)   Podcast (OK)\n(10)  Usuário\n(0)   SAIR DO PROGRAMA\n(digite somente o número da classe escolhida)")
+    print("\n\nOlá, este é o Micro Micro Spotify, aqui podemos consultar, inserir, deletar e atualizar dados do nosso banco de dados.\nNo momento você gostaria de utilizar qual classe do banco de Dados? Escolha entre as disponíveis abaixo:\n\n(1)   Álbum(OK)\n(2)   Artista(OK)\n(3)   Concerto\n(4)   Episódio (OK)\n(5)   Gênero (OK)\n(6)   Gravadora\n(7)   Música(OK)\n(8)   Playlist\n(9)   Podcast (OK)\n(10)  Usuário(OK)\n(0)   SAIR DO PROGRAMA\n(digite somente o número da classe escolhida)")
     value = input("\nESCREVA O NÚMERO DA CLASSE ESCOLHIDA: ")
     return value
 
@@ -20,7 +21,8 @@ while interromper == 0:
     if classToCRUD == 1:
         print("ÁLBUM\n")
         albumCRUD = RunAlbum()
-        al = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\nINPUT = "))
+        procedure = Procedures()
+        al = int(input("Escolha uma das funções que irá utilizar:\n(1) CRIAR\n(2) LER\n(3) ATUALIZAR\n(4) DELETAR\n(5)  Consultar músicas em um Álbum específico\nINPUT = "))
         if al  == 1:
             albumCRUD.inputCreateAlbum()
         if al  == 2:
@@ -32,6 +34,9 @@ while interromper == 0:
         if al  == 4:
             escolha = int(input("Escolha um álbum para deletar, digite o seu código\nINPUT = "))
             albumCRUD.inputDeleteAlbum(escolha)
+        if al == 5:
+            escolha = int(input("Escolha um álbum para consultar as músicas\nINPUT = "))
+            print(procedure.albumMusicas(escolha))
 
     if classToCRUD == 2:
         print("ARTISTA\n")
@@ -165,7 +170,7 @@ while interromper == 0:
             escolha = int(input("Escolha um usuario para deletar, digite o seu código\nINPUT = "))
             usuarioCRUD.inputDeleteUsuario(escolha)
 
-    interromper = int(input("Você quer fechar o programa? (Digite: 1 - Sim ou 0 - Não)  "))
+    interromper = int(input("Você deseja terminar o programa? (Digite: 1 - Sim ou 0 - Não)  "))
     os.system('cls||clear')
     if interromper == 1:
         break
