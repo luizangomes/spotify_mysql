@@ -298,6 +298,9 @@ insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNa
 insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678978, "Usuário Fantasmin", "senha", "usuariofantasmin@mail.com", "2010-10-01", "Normal");
 insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678988, "Usuário Fantasma", "senha", "usuariofantasma@mail.com", "2000-01-01", "Premium");
 insert into USUARIO (cpfUsuario, nomeUsuario, senhaUsuario, emailUsuario, dataNascUsuario, tipoUsuario) values (12345678989, "Usuário Fantasminha", "senha", "usuariofantasminha@mail.com", "1990-01-01", "Premium");
+insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (, "Aleatorias", "aleatoriedades", "privada", 12345678968);
+insert into PLAYLIST (codPlaylist, nomePlaylist, descPlaylist, statusPlaylist, cpfUsuario) values (5, "Aleatorias", "aleatoriedades", "privada", 12345678989);
+
 
 USE SPOTIFY_FINAL;
 /*5 tabelas mostrando as playlists - Produto Cartesiano (5 TABELAS)*/
